@@ -8,7 +8,7 @@ const users = [
   {
     id: 2,
     email: "user@warhammer.com",
-    password: "password",
+    password: "123456",
     name: "Usuario",
   },
 ];
