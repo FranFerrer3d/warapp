@@ -6,6 +6,7 @@
         Volver al Dashboard
       </v-btn>
     </v-row>
+    <hr />
     <!-- Wizard Card -->
     <v-card class="mx-auto" max-width="800">
       <!-- Step Title + Indicator -->

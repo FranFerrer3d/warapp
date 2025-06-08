@@ -6,7 +6,7 @@
         Volver al Dashboard
       </v-btn>
     </v-row>
-
+    <hr />
     <!-- Estadísticas Generales -->
     <v-row class="mb-6" justify="center">
       <v-col cols="12" md="4" class="d-flex">
