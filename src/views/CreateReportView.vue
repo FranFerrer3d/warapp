@@ -1,5 +1,11 @@
 <template>
   <v-container>
+    <!-- Botón Volver -->
+    <v-row class="my-4" justify="center">
+      <v-btn color="primary" @click="$router.push('/dashboard')">
+        Volver al Dashboard
+      </v-btn>
+    </v-row>
     <!-- Wizard Card -->
     <v-card class="mx-auto" max-width="800">
       <!-- Step Title + Indicator -->
