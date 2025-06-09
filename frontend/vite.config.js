@@ -1,10 +1,10 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vuetify from 'vite-plugin-vuetify'
-import { fileURLToPath, URL } from 'url'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vuetify from 'vite-plugin-vuetify';
+import { fileURLToPath, URL } from 'url';
 
 export default defineConfig({
-  base: '/',
+  base: '/', // 👈 Esto es clave para Vite en producción
   plugins: [
     vue(),
     vuetify({ autoImport: true })
@@ -14,4 +14,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   }
-})
+});

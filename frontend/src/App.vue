@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar color="primary" dark app>
-      <v-toolbar-title>⚔️ Warhammer Reports</v-toolbar-title>
+      <v-toolbar-title>⚔️ Battle Reports ⚔️</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -27,7 +27,7 @@ export default {
     logout() {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      this.$router.push("/");
+      this.$router.push("/"); // 👈 A la raíz
     },
   },
 };
