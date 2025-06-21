@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import { login } from '@/services/authService';
+
 export default {
   data() {
     return {
@@ -40,14 +42,18 @@ export default {
     };
   },
   methods: {
-    handleLogin() {
-      // Simulación de login
-      if (this.email === "admin@warhammer.com" && this.password === "123456") {
-        localStorage.setItem("token", "mock-token-123");
-        localStorage.setItem("user", JSON.stringify({ email: this.email }));
-        this.$router.push("/dashboard");
-      } else {
-        this.error = "Correo o contraseña incorrectos";
+    async handleLogin() {
+      this.error = null;
+      try {
+        const { data } = await login({
+          email: this.email,
+          contraseña: this.password,
+        });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        this.$router.push('/dashboard');
+      } catch (err) {
+        this.error = err.response?.data?.message || 'Correo o contraseña incorrectos';
       }
     },
   },
