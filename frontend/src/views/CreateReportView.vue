@@ -447,5 +447,6 @@ export default {
 <style scoped>
 .v-card-title {
   font-weight: bold;
+  color: #ffef00;
 }
 </style>

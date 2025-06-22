@@ -264,7 +264,7 @@ export default {
           datasets: [
             {
               data: [this.totalWins, this.totalLosses, this.totalDraws],
-              backgroundColor: ["#4CAF50", "#F44336", "#FFC107"],
+              backgroundColor: ["#00bfff", "#6a0dad", "#ffef00"],
             },
           ],
         },
@@ -279,7 +279,7 @@ export default {
             {
               label: "Veces Jugado",
               data: this.topMaps.map((m) => m[1]),
-              backgroundColor: "#42A5F5",
+              backgroundColor: "#00bfff",
             },
           ],
         },
@@ -318,9 +318,9 @@ export default {
   text-align: center;
 }
 .v-table th {
-  background-color: #42a5f5;
+  background-color: #6a0dad;
 }
 .v-table tbody tr:nth-child(even) {
-  background-color: #5b6b79;
+  background-color: #1e1e1e;
 }
 </style>

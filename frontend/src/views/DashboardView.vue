@@ -318,28 +318,22 @@ export default {
 .card-win {
   background: linear-gradient(
     117deg,
-    rgba(50, 204, 47, 1) 0%,
-    rgba(141, 214, 139, 1) 8%,
-    rgba(110, 119, 156, 1) 52%,
-    rgba(110, 119, 156, 1) 100%
+    #00bfff 0%,
+    #6a0dad 100%
   );
 }
 .card-lose {
   background: linear-gradient(
     117deg,
-    rgba(204, 84, 47, 1) 0%,
-    rgba(214, 139, 139, 1) 8%,
-    rgba(110, 119, 156, 1) 52%,
-    rgba(110, 119, 156, 1) 100%
+    #6a0dad 0%,
+    #b00020 100%
   );
 }
 .card-draw {
   background: linear-gradient(
     117deg,
-    rgb(128, 193, 255) 0%,
-    rgb(175, 216, 255) 8%,
-    rgba(110, 119, 156, 1) 52%,
-    rgba(110, 119, 156, 1) 100%
+    #ffef00 0%,
+    #6a0dad 100%
   );
 }
 

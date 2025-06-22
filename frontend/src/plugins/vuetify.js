@@ -9,6 +9,18 @@ export default createVuetify({
     sets: { mdi },
   },
   theme: {
-    defaultTheme: 'dark',
+    defaultTheme: 'esports',
+    themes: {
+      esports: {
+        dark: true,
+        colors: {
+          background: '#000000',
+          surface: '#121212',
+          primary: '#00bfff',
+          secondary: '#6a0dad',
+          accent: '#ffef00',
+        },
+      },
+    },
   },
 })
