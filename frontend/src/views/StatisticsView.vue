@@ -149,12 +149,12 @@
 
 <script>
 import Chart from "chart.js/auto";
-import reports from "@/mock/statisticsMock.js"; // Aquí tu mock real
+import { getAllReports } from '@/services/reportService';
 
 export default {
   data() {
     return {
-      reports,
+      reports: [],
     };
   },
   computed: {
@@ -264,7 +264,7 @@ export default {
           datasets: [
             {
               data: [this.totalWins, this.totalLosses, this.totalDraws],
-              backgroundColor: ["#4CAF50", "#F44336", "#FFC107"],
+              backgroundColor: ["#00bfff", "#6a0dad", "#ffef00"],
             },
           ],
         },
@@ -279,15 +279,24 @@ export default {
             {
               label: "Veces Jugado",
               data: this.topMaps.map((m) => m[1]),
-              backgroundColor: "#42A5F5",
+              backgroundColor: "#00bfff",
             },
           ],
         },
       });
     },
+    async fetchReports() {
+      try {
+        const { data } = await getAllReports();
+        this.reports = data;
+        this.setupCharts();
+      } catch (err) {
+        console.error('Error fetching reports', err);
+      }
+    },
   },
   mounted() {
-    this.setupCharts();
+    this.fetchReports();
   },
 };
 </script>
@@ -309,9 +318,9 @@ export default {
   text-align: center;
 }
 .v-table th {
-  background-color: #42a5f5;
+  background-color: #6a0dad;
 }
 .v-table tbody tr:nth-child(even) {
-  background-color: #5b6b79;
+  background-color: #1e1e1e;
 }
 </style>
