@@ -415,9 +415,6 @@ export default {
       this.infoDialog = true;
     },
     async saveReport() {
-      const [expectedA, expectedB] = this.finalScore
-        .split('-')
-        .map((n) => parseInt(n, 10));
       const report = {
         PlayerAId: this.player.name,
         PlayerBId: this.opponent.name,
