@@ -415,23 +415,34 @@ export default {
       this.infoDialog = true;
     },
     async saveReport() {
+      const [expectedA, expectedB] = this.finalScore
+        .split('-')
+        .map((n) => parseInt(n, 10));
       const report = {
-        date: this.reportDate,
-        player: this.player,
-        opponent: this.opponent,
+        PlayerAId: this.player.name,
+        PlayerBId: this.opponent.name,
+        listA: this.player.list,
+        listB: this.opponent.list,
+        expectedA,
+        expectedB,
+        date: new Date(this.reportDate).toISOString(),
         map: this.selectedMap.name,
         deployment: this.selectedDeployment.name,
         primaryMission: this.selectedPrimary.name,
-        secondaryPlayer: this.selectedSecondaryPlayer.name,
-        secondaryOpponent: this.selectedSecondaryOpponent.name,
-        magicPlayer: this.playerMagic,
-        magicOpponent: this.opponentMagic,
-        pointsPlayer: this.pointsPlayer,
-        pointsOpponent: this.pointsOpponent,
-        primaryResult: this.primaryResult,
-        secondaryPlayerCompleted: this.secondaryPlayerCompleted,
-        secondaryOpponentCompleted: this.secondaryOpponentCompleted,
-        finalScore: this.finalScore,
+        secondaryA: this.selectedSecondaryPlayer.name,
+        secondaryB: this.selectedSecondaryOpponent.name,
+        magicA: this.playerMagic.map((m) => m ?? 0),
+        magicB: this.opponentMagic.map((m) => m ?? 0),
+        killsA: this.pointsPlayer,
+        killsB: this.pointsOpponent,
+        primaryResult:
+          this.primaryResult === 'player'
+            ? 'PlayerA'
+            : this.primaryResult === 'opponent'
+            ? 'PlayerB'
+            : 'none',
+        secondaryWinA: this.secondaryPlayerCompleted,
+        secondaryWinB: this.secondaryOpponentCompleted,
       };
       try {
         await createReport(report);
