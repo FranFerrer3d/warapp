@@ -177,71 +177,12 @@
 </template>
 
 <script>
+import { getAllReports } from '@/services/reportService';
+
 export default {
   data() {
     return {
-      reports: [
-        {
-          id: 1,
-          date: "2025-06-06",
-          player: { name: "Thorin", army: "Dwarven Holds" },
-          opponent: { name: "Elrond" },
-          map: "Bosque de las Sombras",
-          deployment: "Frontline Clash",
-          primaryMission: "Spoils of War",
-          primaryResult: "player",
-          secondaryPlayer: "Capture the Flags",
-          secondaryOpponent: "Slay the Beast",
-          pointsPlayer: 3000,
-          pointsOpponent: 2500,
-          finalScore: "15-5",
-        },
-        {
-          id: 2,
-          date: "2025-06-05",
-          player: { name: "Eowyn", army: "Kingdom of Equitaine" },
-          opponent: { name: "Saruman" },
-          map: "Colinas de Sangre",
-          deployment: "Refused Flank",
-          primaryMission: "Breakthrough",
-          primaryResult: "opponent",
-          secondaryPlayer: "Stand Firm",
-          secondaryOpponent: "Forbid Trespass",
-          pointsPlayer: 1800,
-          pointsOpponent: 2200,
-          finalScore: "8-12",
-        },
-        {
-          id: 3,
-          date: "2025-06-04",
-          player: { name: "Gimli", army: "Infernal Dwarves" },
-          opponent: { name: "Boromir" },
-          map: "Campos de Pelennor",
-          deployment: "Spearhead",
-          primaryMission: "Hold the Centre",
-          primaryResult: "both",
-          secondaryPlayer: "Slay the Beast",
-          secondaryOpponent: "Demonstrate Superiority",
-          pointsPlayer: 2000,
-          pointsOpponent: 2000,
-          finalScore: "10-10",
-        },
-        {
-          id: 4,
-          date: "2025-06-03",
-          player: { name: "Faramir", army: "Highborn Elves" },
-          opponent: { name: "Gollum" },
-          map: "Ruinas de Osgiliath",
-          deployment: "Mutual Encroachment",
-          primaryMission: "Forage and Plunder",
-          primaryResult: "none",
-          secondaryPlayer: "Work as One",
-          secondaryOpponent: "Commit to Battle",
-          pointsPlayer: 2700,
-          pointsOpponent: 2100,
-          finalScore: "14-6",
-        },
-      ],
+      reports: [],
 
       visibleReports: [],
       itemsPerPage: 5,
@@ -270,9 +211,23 @@ export default {
     },
   },
   created() {
-    this.loadMoreReports();
+    this.fetchReports();
   },
   methods: {
+    async fetchReports() {
+      try {
+        this.loading = true;
+        const { data } = await getAllReports();
+        this.reports = data;
+        this.visibleReports = [];
+        this.allLoaded = false;
+      } catch (err) {
+        console.error('Error fetching reports', err);
+      } finally {
+        this.loading = false;
+        this.loadMoreReports();
+      }
+    },
     armyImage(armyName) {
       const armyMap = {
         "Highborn Elves": "Altos.png",
@@ -363,28 +318,22 @@ export default {
 .card-win {
   background: linear-gradient(
     117deg,
-    rgba(50, 204, 47, 1) 0%,
-    rgba(141, 214, 139, 1) 8%,
-    rgba(110, 119, 156, 1) 52%,
-    rgba(110, 119, 156, 1) 100%
+    #00bfff 0%,
+    #6a0dad 100%
   );
 }
 .card-lose {
   background: linear-gradient(
     117deg,
-    rgba(204, 84, 47, 1) 0%,
-    rgba(214, 139, 139, 1) 8%,
-    rgba(110, 119, 156, 1) 52%,
-    rgba(110, 119, 156, 1) 100%
+    #6a0dad 0%,
+    #b00020 100%
   );
 }
 .card-draw {
   background: linear-gradient(
     117deg,
-    rgb(128, 193, 255) 0%,
-    rgb(175, 216, 255) 8%,
-    rgba(110, 119, 156, 1) 52%,
-    rgba(110, 119, 156, 1) 100%
+    #ffef00 0%,
+    #6a0dad 100%
   );
 }
 
