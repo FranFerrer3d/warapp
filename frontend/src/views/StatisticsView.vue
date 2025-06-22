@@ -149,12 +149,12 @@
 
 <script>
 import Chart from "chart.js/auto";
-import reports from "@/mock/statisticsMock.js"; // Aquí tu mock real
+import { getAllReports } from '@/services/reportService';
 
 export default {
   data() {
     return {
-      reports,
+      reports: [],
     };
   },
   computed: {
@@ -285,9 +285,18 @@ export default {
         },
       });
     },
+    async fetchReports() {
+      try {
+        const { data } = await getAllReports();
+        this.reports = data;
+        this.setupCharts();
+      } catch (err) {
+        console.error('Error fetching reports', err);
+      }
+    },
   },
   mounted() {
-    this.setupCharts();
+    this.fetchReports();
   },
 };
 </script>

@@ -274,6 +274,7 @@ import {
   primaries,
   secondaries,
 } from "@/mock/reportOptions.js";
+import { createReport } from '@/services/reportService';
 
 export default {
   data() {
@@ -413,7 +414,7 @@ export default {
       this.currentInfo = info;
       this.infoDialog = true;
     },
-    saveReport() {
+    async saveReport() {
       const report = {
         date: this.reportDate,
         player: this.player,
@@ -432,7 +433,12 @@ export default {
         secondaryOpponentCompleted: this.secondaryOpponentCompleted,
         finalScore: this.finalScore,
       };
-      console.log("Reporte guardado:", report);
+      try {
+        await createReport(report);
+        this.$router.push('/dashboard');
+      } catch (err) {
+        console.error('Error saving report', err);
+      }
     },
   },
 };
