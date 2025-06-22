@@ -46,8 +46,8 @@ export default {
       this.error = null;
       try {
         const { data } = await login({
-          email: this.email,
-          contraseña: this.password,
+          user: this.email,
+          pass: this.password,
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
