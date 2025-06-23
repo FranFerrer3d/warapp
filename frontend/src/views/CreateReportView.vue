@@ -361,6 +361,10 @@ export default {
     },
     opponentComplete() {
       return this.opponent.id && this.opponent.list && this.expectedB !== null;
+      return this.player.id && this.player.list;
+    },
+    opponentComplete() {
+      return this.opponent.id && this.opponent.list;
     },
     magicComplete() {
       return (
