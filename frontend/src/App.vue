@@ -26,7 +26,7 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      sessionStorage.removeItem("user");
       this.$router.push("/"); // 👈 A la raíz
     },
   },
