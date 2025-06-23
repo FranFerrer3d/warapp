@@ -242,7 +242,7 @@
           <v-autocomplete
             v-model="player.id"
             :items="players"
-            item-title="name"
+            item-title="nombre"
             item-value="id"
             label="Nombre"
             outlined
@@ -271,7 +271,7 @@
           <v-autocomplete
             v-model="opponent.id"
             :items="players"
-            item-title="name"
+            item-title="nombre"
             item-value="id"
             label="Nombre"
             outlined
@@ -302,8 +302,8 @@ import {
   primaries,
   secondaries,
 } from "@/mock/reportOptions.js";
-import { createReport } from '@/services/reportService';
-import { getAllPlayers } from '@/services/playerService';
+import { createReport } from "@/services/reportService";
+import { getAllPlayers } from "@/services/playerService";
 
 export default {
   data() {
@@ -380,8 +380,7 @@ export default {
         this.selectedDeployment &&
         this.selectedPrimary &&
         this.selectedSecondaryPlayer &&
-        this.selectedSecondaryOpponent &&
-        this.magicComplete
+        this.selectedSecondaryOpponent
       );
     },
     finalScore() {
@@ -443,7 +442,7 @@ export default {
         const { data } = await getAllPlayers();
         this.players = data;
       } catch (err) {
-        console.error('Error fetching players', err);
+        console.error("Error fetching players", err);
       }
     },
     openPlayerDialog() {
@@ -481,19 +480,19 @@ export default {
         killsA: this.pointsPlayer,
         killsB: this.pointsOpponent,
         primaryResult:
-          this.primaryResult === 'player'
-            ? 'PlayerA'
-            : this.primaryResult === 'opponent'
-            ? 'PlayerB'
-            : 'none',
+          this.primaryResult === "player"
+            ? "PlayerA"
+            : this.primaryResult === "opponent"
+            ? "PlayerB"
+            : "none",
         secondaryWinA: this.secondaryPlayerCompleted,
         secondaryWinB: this.secondaryOpponentCompleted,
       };
       try {
         await createReport(report);
-        this.$router.push('/dashboard');
+        this.$router.push("/dashboard");
       } catch (err) {
-        console.error('Error saving report', err);
+        console.error("Error saving report", err);
       }
     },
   },
