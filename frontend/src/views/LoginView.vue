@@ -32,6 +32,7 @@
 
 <script>
 import { login } from '@/services/authService';
+import { getPlayerByEmail } from '@/services/playerService';
 
 export default {
   data() {
@@ -50,7 +51,10 @@ export default {
           pass: this.password,
         });
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+
+        const { data: userData } = await getPlayerByEmail(this.email);
+        sessionStorage.setItem('user', JSON.stringify(userData));
+
         this.$router.push('/dashboard');
       } catch (err) {
         this.error = err.response?.data?.message || 'Correo o contraseña incorrectos';

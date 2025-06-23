@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import { getAllReports } from '@/services/reportService';
+import { getReportsByPlayer } from '@/services/reportService';
 
 export default {
   data() {
@@ -217,7 +217,12 @@ export default {
     async fetchReports() {
       try {
         this.loading = true;
-        const { data } = await getAllReports();
+        const sessionUser = sessionStorage.getItem('user');
+        if (!sessionUser) {
+          throw new Error('Usuario no encontrado en sessionStorage');
+        }
+        const user = JSON.parse(sessionUser);
+        const { data } = await getReportsByPlayer(user.id);
         this.reports = data;
         this.visibleReports = [];
         this.allLoaded = false;
