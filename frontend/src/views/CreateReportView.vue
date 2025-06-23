@@ -248,6 +248,13 @@
             outlined
           />
           <v-textarea v-model="player.list" label="Lista" rows="6" outlined />
+          <v-select
+            v-model="expectedA"
+            :items="expectedOptions"
+            label="Resultado Esperado"
+            outlined
+            class="mt-4"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -270,6 +277,13 @@
             outlined
           />
           <v-textarea v-model="opponent.list" label="Lista" rows="6" outlined />
+          <v-select
+            v-model="expectedB"
+            :items="expectedOptions"
+            label="Resultado Esperado"
+            outlined
+            class="mt-4"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -300,6 +314,9 @@ export default {
       opponentDialog: false,
       player: { id: null, list: "" },
       opponent: { id: null, list: "" },
+      expectedA: null,
+      expectedB: null,
+      expectedOptions: Array.from({ length: 21 }, (_, i) => i),
       players: [],
       maps,
       deployments,
@@ -340,10 +357,10 @@ export default {
       return titles[this.step - 1] || "Paso";
     },
     playerComplete() {
-      return this.player.id && this.player.list;
+      return this.player.id && this.player.list && this.expectedA !== null;
     },
     opponentComplete() {
-      return this.opponent.id && this.opponent.list;
+      return this.opponent.id && this.opponent.list && this.expectedB !== null;
     },
     magicComplete() {
       return (
@@ -447,8 +464,8 @@ export default {
         PlayerBId: this.opponent.id,
         listA: this.player.list,
         listB: this.opponent.list,
-        expectedA,
-        expectedB,
+        expectedA: this.expectedA,
+        expectedB: this.expectedB,
         date: new Date(this.reportDate).toISOString(),
         map: this.selectedMap.name,
         deployment: this.selectedDeployment.name,
