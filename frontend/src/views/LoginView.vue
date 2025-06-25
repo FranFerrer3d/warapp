@@ -33,9 +33,9 @@
               {{ error }}
             </v-alert>
 
-            <div v-if="loading" class="text-center mt-4">
+            <!-- <div v-if="loading" class="text-center mt-4">
               <v-progress-circular indeterminate color="cyan lighten-2" />
-            </div>
+            </div> -->
           </v-card-text>
         </v-card>
       </v-col>
@@ -76,7 +76,8 @@ export default {
         }
       } catch (err) {
         this.error =
-          err.message || err.response?.data?.message ||
+          err.message ||
+          err.response?.data?.message ||
           "Correo o contraseña incorrectos";
       } finally {
         this.loading = false;

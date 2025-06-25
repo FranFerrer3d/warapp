@@ -52,7 +52,7 @@
           @click="openReportModal(report)"
         >
           <v-card-title class="text-h6">
-            Oponente: {{ report.opponent.name }}
+            Oponente: {{ report.opponent?.name }}
           </v-card-title>
 
           <v-card-subtitle>{{ formatDate(report.date) }}</v-card-subtitle>
@@ -66,7 +66,7 @@
 
           <v-avatar size="64" class="army-avatar">
             <v-img
-              :src="armyImage(report.player.army)"
+              :src="armyImage(report.player?.army)"
               alt="Army Icon"
               contain
             />
@@ -191,7 +191,7 @@
 </template>
 
 <script>
-import { getReportsByPlayer } from '@/services/reportService';
+import { getReportsByPlayer } from "@/services/reportService";
 
 export default {
   data() {
@@ -220,7 +220,7 @@ export default {
           report.map.toLowerCase().includes(query) ||
           report.deployment.toLowerCase().includes(query) ||
           report.finalScore.includes(query) ||
-          report.player.army.toLowerCase().includes(query) // <-- Añadido aquí
+          report.player.army?.toLowerCase().includes(query) // <-- Añadido aquí
         );
       });
     },
@@ -233,9 +233,9 @@ export default {
       try {
         this.loading = true;
         this.fetchError = null;
-        const sessionUser = sessionStorage.getItem('user');
+        const sessionUser = sessionStorage.getItem("user");
         if (!sessionUser) {
-          throw new Error('Usuario no encontrado en sessionStorage');
+          throw new Error("Usuario no encontrado en sessionStorage");
         }
         const user = JSON.parse(sessionUser);
         const playerId = user.id ?? user.playerId ?? user.Id ?? user.ID;
@@ -247,11 +247,11 @@ export default {
           const player = isPlayerA ? r.playerA : r.playerB;
           const opponent = isPlayerA ? r.playerB : r.playerA;
 
-          let primaryResult = 'none';
+          let primaryResult = "none";
           if (r.primaryResult === 1) {
-            primaryResult = isPlayerA ? 'player' : 'opponent';
+            primaryResult = isPlayerA ? "player" : "opponent";
           } else if (r.primaryResult === 2) {
-            primaryResult = isPlayerA ? 'opponent' : 'player';
+            primaryResult = isPlayerA ? "opponent" : "player";
           }
 
           return {
@@ -266,7 +266,9 @@ export default {
             secondaryOpponent: isPlayerA ? r.secondaryB : r.secondaryA,
             pointsPlayer: isPlayerA ? r.killsA : r.killsB,
             pointsOpponent: isPlayerA ? r.killsB : r.killsA,
-            finalScore: `${isPlayerA ? r.finalScoreA : r.finalScoreB}-${isPlayerA ? r.finalScoreB : r.finalScoreA}`,
+            finalScore: `${isPlayerA ? r.finalScoreA : r.finalScoreB}-${
+              isPlayerA ? r.finalScoreB : r.finalScoreA
+            }`,
             primaryResult,
           };
         });
@@ -274,8 +276,8 @@ export default {
         this.visibleReports = [];
         this.allLoaded = false;
       } catch (err) {
-        console.error('Error fetching reports', err);
-        this.fetchError = 'No se pudieron cargar los reportes';
+        console.error("Error fetching reports", err);
+        this.fetchError = "No se pudieron cargar los reportes";
       } finally {
         this.loading = false;
         this.loadMoreReports();
@@ -369,25 +371,13 @@ export default {
 
 /* Gradientes para las Cards */
 .card-win {
-  background: linear-gradient(
-    117deg,
-    #00bfff 0%,
-    #6a0dad 100%
-  );
+  background: linear-gradient(117deg, #00bfff 0%, #6a0dad 100%);
 }
 .card-lose {
-  background: linear-gradient(
-    117deg,
-    #6a0dad 0%,
-    #b00020 100%
-  );
+  background: linear-gradient(117deg, #6a0dad 0%, #b00020 100%);
 }
 .card-draw {
-  background: linear-gradient(
-    117deg,
-    #ffef00 0%,
-    #6a0dad 100%
-  );
+  background: linear-gradient(117deg, #b5c0c4 0%, #00bfff 100%);
 }
 
 /* Necesario para que el avatar se posicione dentro de la card */
@@ -413,5 +403,12 @@ export default {
 .modern-btn:hover {
   transform: scale(1.02);
   box-shadow: 0 0 12px #7f00ff;
+}
+
+@media (max-width: 768px) {
+  .modern-btn {
+    width: 100%;
+    margin: 5px auto;
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar color="primary" dark app>
+    <!-- <v-app-bar color="primary" dark app>
       <v-toolbar-title>⚔️ Battle Reports ⚔️</v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -8,7 +8,7 @@
       <v-btn icon @click="logout" v-if="isAuthenticated">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <v-main>
       <router-view />

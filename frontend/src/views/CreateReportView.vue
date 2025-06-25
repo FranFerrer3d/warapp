@@ -25,7 +25,7 @@
           <v-card-text>
             <v-btn
               @click="openPlayerDialog"
-              class="ma-2"
+              class="modern-btn"
               color="primary"
               outlined
             >
@@ -41,7 +41,7 @@
 
             <v-btn
               @click="openOpponentDialog"
-              class="ma-2"
+              class="modern-btn"
               color="primary"
               outlined
             >
@@ -56,7 +56,7 @@
             </v-btn>
 
             <v-btn
-              class="ma-2"
+              class="modern-btn"
               color="secondary"
               outlined
               @click="randomizeFields"
@@ -173,7 +173,7 @@
             <h3>Puntos Eliminados</h3>
             <v-text-field
               v-model="pointsPlayer"
-              label="Puntos Eliminados al Jugador"
+              label="Puntos Eliminados por el Jugador"
               type="number"
               min="0"
               max="4000"
@@ -182,7 +182,7 @@
             />
             <v-text-field
               v-model="pointsOpponent"
-              label="Puntos Eliminados al Oponente"
+              label="Puntos Eliminados por el Oponente"
               type="number"
               min="0"
               max="4000"
@@ -369,21 +369,24 @@ export default {
       opponentMagic: [null, null, null, null, null, null],
       pointsPlayer: null,
       pointsOpponent: null,
-        primaryResult: null,
-        secondaryPlayerCompleted: false,
-        secondaryOpponentCompleted: false,
-        saving: false,
-        saveError: null,
-      };
+      primaryResult: null,
+      secondaryPlayerCompleted: false,
+      secondaryOpponentCompleted: false,
+      saving: false,
+      saveError: null,
+    };
   },
   created() {
     this.fetchPlayers();
-    const sessionUser = sessionStorage.getItem('user');
+    const sessionUser = sessionStorage.getItem("user");
     if (sessionUser) {
       this.currentUser = JSON.parse(sessionUser);
 
       const playerId =
-        this.currentUser.id ?? this.currentUser.playerId ?? this.currentUser.Id ?? this.currentUser.ID;
+        this.currentUser.id ??
+        this.currentUser.playerId ??
+        this.currentUser.Id ??
+        this.currentUser.ID;
       this.player.id = playerId;
     }
   },
@@ -491,7 +494,10 @@ export default {
     openPlayerDialog() {
       if (this.currentUser) {
         const playerId =
-          this.currentUser.id ?? this.currentUser.playerId ?? this.currentUser.Id ?? this.currentUser.ID;
+          this.currentUser.id ??
+          this.currentUser.playerId ??
+          this.currentUser.Id ??
+          this.currentUser.ID;
         this.player.id = playerId;
       }
       this.playerDialog = true;
@@ -512,13 +518,15 @@ export default {
     magicOptionsForPlayerA(index) {
       return this.magicOptions.filter(
         (opt) =>
-          !this.playerMagic.includes(opt.value) || this.playerMagic[index] === opt.value
+          !this.playerMagic.includes(opt.value) ||
+          this.playerMagic[index] === opt.value
       );
     },
     magicOptionsForPlayerB(index) {
       return this.magicOptions.filter(
         (opt) =>
-          !this.opponentMagic.includes(opt.value) || this.opponentMagic[index] === opt.value
+          !this.opponentMagic.includes(opt.value) ||
+          this.opponentMagic[index] === opt.value
       );
     },
     async saveReport() {
@@ -579,5 +587,12 @@ export default {
 .modern-btn:hover {
   transform: scale(1.02);
   box-shadow: 0 0 12px #7f00ff;
+}
+
+@media (max-width: 768px) {
+  .modern-btn {
+    width: 100%;
+    margin: 5px auto;
+  }
 }
 </style>
