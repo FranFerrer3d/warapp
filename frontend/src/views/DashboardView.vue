@@ -64,13 +64,22 @@
             </div>
           </v-card-text>
 
-          <v-avatar size="64" class="army-avatar">
-            <v-img
-              :src="armyImage(report.player?.army)"
-              alt="Army Icon"
-              contain
-            />
-          </v-avatar>
+          <div class="army-avatars">
+            <v-avatar size="48" class="mx-1">
+              <v-img
+                :src="armyImage(report.armyPlayer)"
+                alt="Army A"
+                contain
+              />
+            </v-avatar>
+            <v-avatar size="48" class="mx-1">
+              <v-img
+                :src="armyImage(report.armyOpponent)"
+                alt="Army B"
+                contain
+              />
+            </v-avatar>
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -93,6 +102,14 @@
       <v-card>
         <v-card-title>Detalles del Reporte</v-card-title>
         <v-card-text v-if="selectedReport">
+          <div class="d-flex justify-center mb-3">
+            <v-avatar size="64" class="mx-1">
+              <v-img :src="armyImage(selectedReport.armyPlayer)" alt="Army A" contain />
+            </v-avatar>
+            <v-avatar size="64" class="mx-1">
+              <v-img :src="armyImage(selectedReport.armyOpponent)" alt="Army B" contain />
+            </v-avatar>
+          </div>
           <v-list dense>
             <v-list-item>
               <v-list-item-title>Jugador</v-list-item-title>
@@ -178,6 +195,20 @@
               }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
+          <v-expansion-panels class="mt-4">
+            <v-expansion-panel>
+              <v-expansion-panel-title>Lista Jugador</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <pre class="preformatted">{{ selectedReport.listPlayer }}</pre>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-title>Lista Oponente</v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <pre class="preformatted">{{ selectedReport.listOpponent }}</pre>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -220,7 +251,8 @@ export default {
           report.map.toLowerCase().includes(query) ||
           report.deployment.toLowerCase().includes(query) ||
           report.finalScore.includes(query) ||
-          report.player.army?.toLowerCase().includes(query) // <-- Añadido aquí
+          report.armyPlayer?.toLowerCase().includes(query) ||
+          report.armyOpponent?.toLowerCase().includes(query)
         );
       });
     },
@@ -246,6 +278,10 @@ export default {
           const isPlayerA = r.playerAId === playerId;
           const player = isPlayerA ? r.playerA : r.playerB;
           const opponent = isPlayerA ? r.playerB : r.playerA;
+          const armyPlayer = isPlayerA ? r.armyA : r.armyB;
+          const armyOpponent = isPlayerA ? r.armyB : r.armyA;
+          const listPlayer = isPlayerA ? r.listA : r.listB;
+          const listOpponent = isPlayerA ? r.listB : r.listA;
 
           let primaryResult = "none";
           if (r.primaryResult === 1) {
@@ -262,6 +298,10 @@ export default {
             deployment: r.deployment,
             primaryMission: r.primaryMission,
             date: r.date,
+            armyPlayer,
+            armyOpponent,
+            listPlayer,
+            listOpponent,
             secondaryPlayer: isPlayerA ? r.secondaryA : r.secondaryB,
             secondaryOpponent: isPlayerA ? r.secondaryB : r.secondaryA,
             pointsPlayer: isPlayerA ? r.killsA : r.killsB,
@@ -385,12 +425,23 @@ export default {
   position: relative;
 }
 
-/* Avatar en la esquina inferior derecha */
-.army-avatar {
+
+/* Container for two army avatars */
+.army-avatars {
   position: absolute;
   bottom: 8px;
   right: 8px;
-  background-color: white; /* opcional: para que destaque el avatar */
+  display: flex;
+  background-color: white;
+  padding: 2px;
+  border-radius: 8px;
+}
+
+.preformatted {
+  white-space: pre-wrap;
+  font-family: monospace;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .modern-btn {
