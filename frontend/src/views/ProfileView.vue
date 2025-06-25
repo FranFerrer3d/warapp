@@ -12,13 +12,46 @@
     <v-card class="mx-auto" max-width="600">
       <v-card-title class="text-h6">Mi Perfil</v-card-title>
       <v-card-text>
-        <v-form @submit.prevent="saveProfile">
-          <v-text-field v-model="player.name" label="Nombre" outlined />
-          <v-text-field v-model="player.lastName" label="Apellidos" outlined />
-          <v-text-field v-model="player.email" label="Correo" type="email" outlined />
-          <v-text-field v-model="player.password" label="Contraseña" type="password" outlined />
-          <v-text-field v-model="player.photo" label="Foto (URL)" outlined />
-          <v-btn type="submit" :loading="saving" :disabled="saving" class="modern-btn full-btn mt-4" color="secondary">
+        <v-form ref="form" @submit.prevent="saveProfile">
+          <v-text-field
+            v-model="player.name"
+            :rules="[rules.required]"
+            label="Nombre"
+            outlined
+          />
+          <v-text-field
+            v-model="player.lastName"
+            :rules="[rules.required]"
+            label="Apellidos"
+            outlined
+          />
+          <v-text-field
+            v-model="player.email"
+            :rules="[rules.required, rules.email]"
+            label="Correo"
+            type="email"
+            outlined
+          />
+          <v-text-field
+            v-model="player.password"
+            :rules="[rules.required]"
+            label="Contraseña"
+            type="password"
+            outlined
+          />
+          <v-file-input
+            label="Foto de Perfil"
+            accept="image/*"
+            @change="handlePhotoChange"
+            prepend-icon="mdi-camera"
+          />
+          <v-btn
+            type="submit"
+            :loading="saving"
+            :disabled="saving"
+            class="modern-btn full-btn mt-4"
+            color="secondary"
+          >
             Guardar Cambios
           </v-btn>
         </v-form>
@@ -65,7 +98,17 @@ import { getReportsByPlayer, deleteReport } from '@/services/reportService';
 export default {
   data() {
     return {
-      player: {},
+      player: {
+        name: '',
+        lastName: '',
+        email: '',
+        password: '',
+        photo: ''
+      },
+      rules: {
+        required: v => !!v || 'Campo obligatorio',
+        email: v => /.+@.+\..+/.test(v) || 'Correo inválido'
+      },
       reports: [],
       saving: false,
       deleteDialog: false,
@@ -88,7 +131,7 @@ export default {
       if (!id) return;
       try {
         const { data } = await getPlayerById(id);
-        this.player = { ...data };
+        Object.assign(this.player, data);
       } catch (err) {
         console.error('Error fetching player', err);
       }
@@ -105,6 +148,8 @@ export default {
       }
     },
     async saveProfile() {
+      const isValid = this.$refs.form.validate();
+      if (!isValid) return;
       this.saving = true;
       const id = this.playerId();
       try {
@@ -115,6 +160,15 @@ export default {
       } finally {
         this.saving = false;
       }
+    },
+    handlePhotoChange(file) {
+      if (!file) return;
+      const selected = Array.isArray(file) ? file[0] : file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        this.player.photo = e.target.result;
+      };
+      reader.readAsDataURL(selected);
     },
     confirmDelete(report) {
       this.reportToDelete = report;
