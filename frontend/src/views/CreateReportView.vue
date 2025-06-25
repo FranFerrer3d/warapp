@@ -2,7 +2,11 @@
   <v-container>
     <!-- Botón Volver -->
     <v-row class="my-4" justify="center">
-      <v-btn color="primary" @click="$router.push('/dashboard')">
+      <v-btn
+        color="primary"
+        class="modern-btn full-btn"
+        @click="$router.push('/dashboard')"
+      >
         Volver al Dashboard
       </v-btn>
     </v-row>
@@ -216,14 +220,22 @@
 
       <!-- Navegación -->
       <v-card-actions>
-        <v-btn v-if="step > 1" variant="text" @click="step--">Atrás</v-btn>
+        <v-btn v-if="step > 1" variant="text" class="full-btn" @click="step--">
+          Atrás
+        </v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="step < 3" color="primary" variant="flat" @click="step++">
+        <v-btn
+          v-if="step < 3"
+          color="primary"
+          variant="flat"
+          class="full-btn"
+          @click="step++"
+        >
           Siguiente
         </v-btn>
         <v-btn
           v-else
-          class="modern-btn"
+          class="modern-btn full-btn"
           color="success"
           variant="flat"
           @click="saveReport"
@@ -254,13 +266,11 @@
       <v-card>
         <v-card-title>Jugador</v-card-title>
         <v-card-text>
-          <v-autocomplete
-            v-model="player.id"
-            :items="players"
-            item-title="nombre"
-            item-value="id"
+          <v-text-field
+            :model-value="currentUserName"
             label="Nombre"
             outlined
+            readonly
           />
           <v-textarea v-model="player.list" label="Lista" rows="6" outlined />
           <v-select
@@ -333,6 +343,7 @@ export default {
       expectedB: null,
       expectedOptions: Array.from({ length: 21 }, (_, i) => i),
       players: [],
+      currentUser: null,
       maps,
       deployments,
       primaries,
@@ -367,8 +378,16 @@ export default {
   },
   created() {
     this.fetchPlayers();
+    const sessionUser = sessionStorage.getItem('user');
+    if (sessionUser) {
+      this.currentUser = JSON.parse(sessionUser);
+      this.player.id = this.currentUser.id;
+    }
   },
   computed: {
+    currentUserName() {
+      return this.currentUser?.nombre || this.currentUser?.name || "";
+    },
     currentTitle() {
       const titles = ["Información General", "Turnos de Magia", "Resultados"];
       return titles[this.step - 1] || "Paso";
@@ -467,6 +486,9 @@ export default {
       this.selectedSecondaryOpponent = rand(this.secondaries);
     },
     openPlayerDialog() {
+      if (this.currentUser) {
+        this.player.id = this.currentUser.id;
+      }
       this.playerDialog = true;
     },
     openOpponentDialog() {

@@ -2,10 +2,18 @@
   <v-container fluid>
     <!-- Botón Nuevo Reporte -->
     <v-row class="my-4" justify="center">
-      <v-btn color="primary" @click="$router.push('/create-report')">
+      <v-btn
+        color="primary"
+        class="modern-btn full-btn mx-2"
+        @click="$router.push('/create-report')"
+      >
         Nuevo Reporte
       </v-btn>
-      <v-btn color="secondary" @click="$router.push('/statistics')">
+      <v-btn
+        color="secondary"
+        class="modern-btn full-btn mx-2"
+        @click="$router.push('/statistics')"
+      >
         Ver Estadísticas
       </v-btn>
     </v-row>
@@ -353,5 +361,17 @@ export default {
   bottom: 8px;
   right: 8px;
   background-color: white; /* opcional: para que destaque el avatar */
+}
+
+.modern-btn {
+  background: linear-gradient(135deg, #00f0ff, #7f00ff);
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.modern-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 12px #7f00ff;
 }
 </style>
