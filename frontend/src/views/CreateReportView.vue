@@ -2,7 +2,11 @@
   <v-container>
     <!-- Botón Volver -->
     <v-row class="my-4" justify="center">
-      <v-btn color="primary" @click="$router.push('/dashboard')">
+      <v-btn
+        color="primary"
+        class="modern-btn full-btn"
+        @click="$router.push('/dashboard')"
+      >
         Volver al Dashboard
       </v-btn>
     </v-row>
@@ -49,6 +53,16 @@
                 }}
               </v-icon>
               Oponente
+            </v-btn>
+
+            <v-btn
+              class="ma-2"
+              color="secondary"
+              outlined
+              @click="randomizeFields"
+            >
+              <v-icon start>mdi-dice-multiple</v-icon>
+              Aleatorio
             </v-btn>
 
             <v-text-field
@@ -124,7 +138,7 @@
               >
                 <v-select
                   v-model="playerMagic[index]"
-                  :items="magicOptions"
+                  :items="magicOptionsForPlayerA(index)"
                   item-title="label"
                   item-value="value"
                   :label="`Turno ${index + 1}`"
@@ -142,7 +156,7 @@
               >
                 <v-select
                   v-model="opponentMagic[index]"
-                  :items="magicOptions"
+                  :items="magicOptionsForPlayerB(index)"
                   item-title="label"
                   item-value="value"
                   :label="`Turno ${index + 1}`"
@@ -206,20 +220,33 @@
 
       <!-- Navegación -->
       <v-card-actions>
-        <v-btn v-if="step > 1" variant="text" @click="step--">Atrás</v-btn>
+        <v-btn v-if="step > 1" variant="text" class="full-btn" @click="step--">
+          Atrás
+        </v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="step < 3" color="primary" variant="flat" @click="step++">
+        <v-btn
+          v-if="step < 3"
+          color="primary"
+          variant="flat"
+          class="full-btn"
+          @click="step++"
+        >
           Siguiente
         </v-btn>
         <v-btn
           v-else
+          class="modern-btn full-btn"
           color="success"
           variant="flat"
           @click="saveReport"
-          :disabled="!canSaveReport"
+          :disabled="!canSaveReport || saving"
+          :loading="saving"
         >
           Guardar Reporte
         </v-btn>
+        <v-alert v-if="saveError" type="error" class="mt-4">
+          {{ saveError }}
+        </v-alert>
       </v-card-actions>
     </v-card>
 
@@ -239,13 +266,11 @@
       <v-card>
         <v-card-title>Jugador</v-card-title>
         <v-card-text>
-          <v-autocomplete
-            v-model="player.id"
-            :items="players"
-            item-title="nombre"
-            item-value="id"
+          <v-text-field
+            :model-value="currentUserName"
             label="Nombre"
             outlined
+            readonly
           />
           <v-textarea v-model="player.list" label="Lista" rows="6" outlined />
           <v-select
@@ -318,6 +343,7 @@ export default {
       expectedB: null,
       expectedOptions: Array.from({ length: 21 }, (_, i) => i),
       players: [],
+      currentUser: null,
       maps,
       deployments,
       primaries,
@@ -343,15 +369,27 @@ export default {
       opponentMagic: [null, null, null, null, null, null],
       pointsPlayer: null,
       pointsOpponent: null,
-      primaryResult: null,
-      secondaryPlayerCompleted: false,
-      secondaryOpponentCompleted: false,
-    };
+        primaryResult: null,
+        secondaryPlayerCompleted: false,
+        secondaryOpponentCompleted: false,
+        saving: false,
+        saveError: null,
+      };
   },
   created() {
     this.fetchPlayers();
+    const sessionUser = sessionStorage.getItem('user');
+    if (sessionUser) {
+      this.currentUser = JSON.parse(sessionUser);
+      const playerId =
+        this.currentUser.id ?? this.currentUser.playerId ?? this.currentUser.Id ?? this.currentUser.ID;
+      this.player.id = playerId;
+    }
   },
   computed: {
+    currentUserName() {
+      return this.currentUser?.nombre || this.currentUser?.name || "";
+    },
     currentTitle() {
       const titles = ["Información General", "Turnos de Magia", "Resultados"];
       return titles[this.step - 1] || "Paso";
@@ -361,10 +399,6 @@ export default {
     },
     opponentComplete() {
       return this.opponent.id && this.opponent.list && this.expectedB !== null;
-      return this.player.id && this.player.list;
-    },
-    opponentComplete() {
-      return this.opponent.id && this.opponent.list;
     },
     magicComplete() {
       return (
@@ -445,7 +479,20 @@ export default {
         console.error("Error fetching players", err);
       }
     },
+    randomizeFields() {
+      const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      this.selectedMap = rand(this.maps);
+      this.selectedDeployment = rand(this.deployments);
+      this.selectedPrimary = rand(this.primaries);
+      this.selectedSecondaryPlayer = rand(this.secondaries);
+      this.selectedSecondaryOpponent = rand(this.secondaries);
+    },
     openPlayerDialog() {
+      if (this.currentUser) {
+        const playerId =
+          this.currentUser.id ?? this.currentUser.playerId ?? this.currentUser.Id ?? this.currentUser.ID;
+        this.player.id = playerId;
+      }
       this.playerDialog = true;
     },
     openOpponentDialog() {
@@ -461,7 +508,21 @@ export default {
       this.currentInfo = info;
       this.infoDialog = true;
     },
+    magicOptionsForPlayerA(index) {
+      return this.magicOptions.filter(
+        (opt) =>
+          !this.playerMagic.includes(opt.value) || this.playerMagic[index] === opt.value
+      );
+    },
+    magicOptionsForPlayerB(index) {
+      return this.magicOptions.filter(
+        (opt) =>
+          !this.opponentMagic.includes(opt.value) || this.opponentMagic[index] === opt.value
+      );
+    },
     async saveReport() {
+      this.saving = true;
+      this.saveError = null;
       const report = {
         PlayerAId: this.player.id,
         PlayerBId: this.opponent.id,
@@ -493,7 +554,9 @@ export default {
         this.$router.push("/dashboard");
       } catch (err) {
         console.error("Error saving report", err);
+        this.saveError = "Error guardando reporte";
       }
+      this.saving = false;
     },
   },
 };
@@ -503,5 +566,17 @@ export default {
 .v-card-title {
   font-weight: bold;
   color: #ffef00;
+}
+
+.modern-btn {
+  background: linear-gradient(135deg, #00f0ff, #7f00ff);
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.modern-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 12px #7f00ff;
 }
 </style>

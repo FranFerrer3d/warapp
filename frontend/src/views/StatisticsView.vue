@@ -314,8 +314,9 @@ export default {
         const sessionUser = sessionStorage.getItem('user');
         if (!sessionUser) throw new Error('Usuario no encontrado');
         const user = JSON.parse(sessionUser);
-        const { data } = await getReportsByPlayer(user.id);
-        this.reports = data;
+        const playerId = user.id ?? user.playerId ?? user.Id ?? user.ID;
+        const { data } = await getReportsByPlayer(playerId);
+        this.reports = Array.isArray(data) ? data : data?.reports || [];
         this.setupCharts();
       } catch (err) {
         console.error('Error fetching reports', err);

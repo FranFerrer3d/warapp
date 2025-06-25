@@ -2,10 +2,18 @@
   <v-container fluid>
     <!-- Botón Nuevo Reporte -->
     <v-row class="my-4" justify="center">
-      <v-btn color="primary" @click="$router.push('/create-report')">
+      <v-btn
+        color="primary"
+        class="modern-btn full-btn mx-2"
+        @click="$router.push('/create-report')"
+      >
         Nuevo Reporte
       </v-btn>
-      <v-btn color="secondary" @click="$router.push('/statistics')">
+      <v-btn
+        color="secondary"
+        class="modern-btn full-btn mx-2"
+        @click="$router.push('/statistics')"
+      >
         Ver Estadísticas
       </v-btn>
     </v-row>
@@ -19,6 +27,12 @@
           outlined
           clearable
         />
+      </v-col>
+    </v-row>
+
+    <v-row v-if="fetchError" justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <v-alert type="error" class="mb-4">{{ fetchError }}</v-alert>
       </v-col>
     </v-row>
 
@@ -191,6 +205,7 @@ export default {
       reportDialog: false,
       selectedReport: null,
       searchQuery: "",
+      fetchError: null,
     };
   },
   computed: {
@@ -217,17 +232,20 @@ export default {
     async fetchReports() {
       try {
         this.loading = true;
+        this.fetchError = null;
         const sessionUser = sessionStorage.getItem('user');
         if (!sessionUser) {
           throw new Error('Usuario no encontrado en sessionStorage');
         }
         const user = JSON.parse(sessionUser);
-        const { data } = await getReportsByPlayer(user.id);
-        this.reports = data;
+        const playerId = user.id ?? user.playerId ?? user.Id ?? user.ID;
+        const { data } = await getReportsByPlayer(playerId);
+        this.reports = Array.isArray(data) ? data : data?.reports || [];
         this.visibleReports = [];
         this.allLoaded = false;
       } catch (err) {
         console.error('Error fetching reports', err);
+        this.fetchError = 'No se pudieron cargar los reportes';
       } finally {
         this.loading = false;
         this.loadMoreReports();
@@ -353,5 +371,17 @@ export default {
   bottom: 8px;
   right: 8px;
   background-color: white; /* opcional: para que destaque el avatar */
+}
+
+.modern-btn {
+  background: linear-gradient(135deg, #00f0ff, #7f00ff);
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.modern-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 12px #7f00ff;
 }
 </style>
