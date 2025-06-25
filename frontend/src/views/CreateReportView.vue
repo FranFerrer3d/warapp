@@ -337,8 +337,8 @@ export default {
       reportDate: new Date().toISOString().substr(0, 10),
       playerDialog: false,
       opponentDialog: false,
-      player: { id: null, list: "" },
-      opponent: { id: null, list: "" },
+      player: { id: null, list: "", army: "" },
+      opponent: { id: null, list: "", army: "" },
       expectedA: null,
       expectedB: null,
       expectedOptions: Array.from({ length: 21 }, (_, i) => i),
@@ -532,11 +532,17 @@ export default {
     async saveReport() {
       this.saving = true;
       this.saveError = null;
+      const [finalScoreA, finalScoreB] = this.finalScore
+        ? this.finalScore.split("-").map((n) => parseInt(n))
+        : [0, 0];
+
       const report = {
         PlayerAId: this.player.id,
         PlayerBId: this.opponent.id,
         listA: this.player.list,
         listB: this.opponent.list,
+        armyA: this.player.army || "",
+        armyB: this.opponent.army || "",
         expectedA: this.expectedA,
         expectedB: this.expectedB,
         date: new Date(this.reportDate).toISOString(),
@@ -554,9 +560,13 @@ export default {
             ? "PlayerA"
             : this.primaryResult === "opponent"
             ? "PlayerB"
-            : "none",
+            : this.primaryResult === "both"
+            ? "Both"
+            : "None",
         secondaryWinA: this.secondaryPlayerCompleted,
         secondaryWinB: this.secondaryOpponentCompleted,
+        finalScoreA,
+        finalScoreB,
       };
       try {
         await createReport(report);
