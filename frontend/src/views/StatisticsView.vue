@@ -39,6 +39,27 @@
       </v-col>
     </v-row>
 
+    <!-- Mejores y Peores Oponentes -->
+    <v-row class="mb-6" justify="center">
+      <v-col cols="12" md="6" class="d-flex">
+        <v-card class="flex-grow-1">
+          <v-card-title class="text-center">Mejor Contra</v-card-title>
+          <v-card-text class="text-center">
+            <span class="text-h5">{{ bestOpponent || 'N/A' }}</span>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" md="6" class="d-flex">
+        <v-card class="flex-grow-1">
+          <v-card-title class="text-center">Peor Contra</v-card-title>
+          <v-card-text class="text-center">
+            <span class="text-h5">{{ worstOpponent || 'N/A' }}</span>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <!-- Gráficos -->
     <v-row class="mb-6">
       <v-col cols="12" md="6">
@@ -149,12 +170,15 @@
 
 <script>
 import Chart from "chart.js/auto";
-import { getAllReports } from '@/services/reportService';
+import { getReportsByPlayer } from '@/services/reportService';
+import { getBestOpponent, getWorstOpponent } from '@/services/playerStatsService';
 
 export default {
   data() {
     return {
       reports: [],
+      bestOpponent: '',
+      worstOpponent: '',
     };
   },
   computed: {
@@ -287,16 +311,34 @@ export default {
     },
     async fetchReports() {
       try {
-        const { data } = await getAllReports();
+        const sessionUser = sessionStorage.getItem('user');
+        if (!sessionUser) throw new Error('Usuario no encontrado');
+        const user = JSON.parse(sessionUser);
+        const { data } = await getReportsByPlayer(user.id);
         this.reports = data;
         this.setupCharts();
       } catch (err) {
         console.error('Error fetching reports', err);
       }
     },
+
+    async fetchStats() {
+      try {
+        const sessionUser = sessionStorage.getItem('user');
+        if (!sessionUser) throw new Error('Usuario no encontrado');
+        const user = JSON.parse(sessionUser);
+        const { data: best } = await getBestOpponent(user.id);
+        const { data: worst } = await getWorstOpponent(user.id);
+        this.bestOpponent = best;
+        this.worstOpponent = worst;
+      } catch (err) {
+        console.error('Error fetching stats', err);
+      }
+    },
   },
   mounted() {
     this.fetchReports();
+    this.fetchStats();
   },
 };
 </script>
