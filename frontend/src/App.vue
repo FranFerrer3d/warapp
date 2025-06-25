@@ -35,6 +35,6 @@ export default {
 
 <style scoped>
 .v-application {
-  font-family: "Merriweather", serif;
+  font-family: "Roboto", sans-serif;
 }
 </style>

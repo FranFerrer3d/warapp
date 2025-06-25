@@ -88,7 +88,7 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Bebas+Neue&display=swap");
 
 .v-container {
   background-image: url("../../public/Login_Gif2.gif");
@@ -97,7 +97,7 @@ export default {
   background-repeat: no-repeat;
   min-height: 100vh;
   position: relative;
-  font-family: "Poppins", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .v-container::before {

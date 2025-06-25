@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Bebas+Neue&display=swap');
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -28,6 +30,12 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+h1, h2, h3, .v-card-title {
+  font-family: 'Bebas Neue', cursive;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
 h1 {
