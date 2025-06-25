@@ -59,7 +59,9 @@
           @click="openReportModal(report)"
         >
           <v-card-title class="text-h6">
-            Oponente: {{ report.opponent?.name }}
+            <b>Oponente:</b> {{ report.opponent?.nombre }}
+            {{ report.opponent?.apellidos }}
+            <b>[{{ report.opponent?.alias }}]</b>
           </v-card-title>
 
           <v-card-subtitle>{{ formatDate(report.date) }}</v-card-subtitle>
@@ -73,11 +75,7 @@
 
           <div class="army-avatars">
             <v-avatar size="48" class="mx-1">
-              <v-img
-                :src="armyImage(report.armyPlayer)"
-                alt="Army A"
-                contain
-              />
+              <v-img :src="armyImage(report.armyPlayer)" alt="Army A" contain />
             </v-avatar>
             <v-avatar size="48" class="mx-1">
               <v-img
@@ -111,24 +109,25 @@
         <v-card-text v-if="selectedReport">
           <div class="d-flex justify-center mb-3">
             <v-avatar size="64" class="mx-1">
-              <v-img :src="armyImage(selectedReport.armyPlayer)" alt="Army A" contain />
+              <v-img
+                :src="armyImage(selectedReport.armyPlayer)"
+                alt="Army A"
+                contain
+              />
             </v-avatar>
             <v-avatar size="64" class="mx-1">
-              <v-img :src="armyImage(selectedReport.armyOpponent)" alt="Army B" contain />
+              <v-img
+                :src="armyImage(selectedReport.armyOpponent)"
+                alt="Army B"
+                contain
+              />
             </v-avatar>
           </div>
           <v-list dense>
             <v-list-item>
-              <v-list-item-title>Jugador</v-list-item-title>
-              <v-list-item-subtitle>{{
-                selectedReport.player.name
-              }}</v-list-item-subtitle>
-            </v-list-item>
-
-            <v-list-item>
               <v-list-item-title>Oponente</v-list-item-title>
               <v-list-item-subtitle>{{
-                selectedReport.opponent.name
+                selectedReport.opponent.alias
               }}</v-list-item-subtitle>
             </v-list-item>
 
@@ -212,7 +211,9 @@
             <v-expansion-panel>
               <v-expansion-panel-title>Lista Oponente</v-expansion-panel-title>
               <v-expansion-panel-text>
-                <pre class="preformatted">{{ selectedReport.listOpponent }}</pre>
+                <pre class="preformatted">{{
+                  selectedReport.listOpponent
+                }}</pre>
               </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -297,7 +298,7 @@ export default {
             primaryResult = isPlayerA ? "opponent" : "player";
           }
 
-          return {
+          var res = {
             id: r.id,
             player,
             opponent,
@@ -318,6 +319,9 @@ export default {
             }`,
             primaryResult,
           };
+
+          console.log("Reports", res);
+          return res;
         });
 
         this.visibleReports = [];
@@ -431,7 +435,6 @@ export default {
 .position-relative {
   position: relative;
 }
-
 
 /* Container for two army avatars */
 .army-avatars {
