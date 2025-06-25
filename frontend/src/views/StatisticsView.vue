@@ -316,7 +316,37 @@ export default {
         const user = JSON.parse(sessionUser);
         const playerId = user.id ?? user.playerId ?? user.Id ?? user.ID;
         const { data } = await getReportsByPlayer(playerId);
-        this.reports = Array.isArray(data) ? data : data?.reports || [];
+        const rawReports = Array.isArray(data) ? data : data?.reports || [];
+
+        this.reports = rawReports.map((r) => {
+          const isPlayerA = r.playerAId === playerId;
+          const player = isPlayerA ? r.playerA : r.playerB;
+          const opponent = isPlayerA ? r.playerB : r.playerA;
+
+          let primaryResult = 'none';
+          if (r.primaryResult === 1) {
+            primaryResult = isPlayerA ? 'player' : 'opponent';
+          } else if (r.primaryResult === 2) {
+            primaryResult = isPlayerA ? 'opponent' : 'player';
+          }
+
+          return {
+            id: r.id,
+            player,
+            opponent,
+            map: r.map,
+            deployment: r.deployment,
+            primaryMission: r.primaryMission,
+            date: r.date,
+            secondaryPlayer: isPlayerA ? r.secondaryA : r.secondaryB,
+            secondaryOpponent: isPlayerA ? r.secondaryB : r.secondaryA,
+            pointsPlayer: isPlayerA ? r.killsA : r.killsB,
+            pointsOpponent: isPlayerA ? r.killsB : r.killsA,
+            finalScore: `${isPlayerA ? r.finalScoreA : r.finalScoreB}-${isPlayerA ? r.finalScoreB : r.finalScoreA}`,
+            primaryResult,
+          };
+        });
+
         this.setupCharts();
       } catch (err) {
         console.error('Error fetching reports', err);
