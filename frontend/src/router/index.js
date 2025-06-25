@@ -5,6 +5,7 @@ import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import CreateReportView from '@/views/CreateReportView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 const routes = [
   {
@@ -28,6 +29,12 @@ const routes = [
     path: '/statistics',
     name: 'Statistics',
     component: StatisticsView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: ProfileView,
     meta: { requiresAuth: true }
   },
   {

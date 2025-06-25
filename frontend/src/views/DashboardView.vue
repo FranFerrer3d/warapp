@@ -16,6 +16,13 @@
       >
         Ver Estadísticas
       </v-btn>
+      <v-btn
+        color="accent"
+        class="modern-btn full-btn mx-2"
+        @click="$router.push('/profile')"
+      >
+        Mi Perfil
+      </v-btn>
     </v-row>
     <hr />
     <!-- Buscador -->
