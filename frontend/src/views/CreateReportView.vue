@@ -381,7 +381,11 @@ export default {
     const sessionUser = sessionStorage.getItem('user');
     if (sessionUser) {
       this.currentUser = JSON.parse(sessionUser);
-      this.player.id = this.currentUser.id;
+
+      const playerId =
+        this.currentUser.id ?? this.currentUser.playerId ?? this.currentUser.Id ?? this.currentUser.ID;
+      this.player.id = playerId;
+
     }
   },
   computed: {
@@ -487,7 +491,10 @@ export default {
     },
     openPlayerDialog() {
       if (this.currentUser) {
-        this.player.id = this.currentUser.id;
+        const playerId =
+          this.currentUser.id ?? this.currentUser.playerId ?? this.currentUser.Id ?? this.currentUser.ID;
+        this.player.id = playerId;
+
       }
       this.playerDialog = true;
     },
