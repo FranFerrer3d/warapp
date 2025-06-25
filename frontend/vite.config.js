@@ -13,5 +13,15 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    // Proxy API requests durante el desarrollo para evitar problemas de CORS
+    proxy: {
+      '/api': {
+        target: 'https://warapi.onrender.com',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '')
+      }
+    }
   }
 });
