@@ -23,7 +23,7 @@
                 :disabled="loading"
                 type="submit"
                 block
-                class="modern-btn"
+                class="modern-btn full-btn"
               >
                 Entrar
               </v-btn>
@@ -68,12 +68,16 @@ export default {
         localStorage.setItem("token", data.token);
 
         const { data: userData } = await getPlayerByEmail(this.email);
-        sessionStorage.setItem("user", JSON.stringify(userData));
-
-        this.$router.push("/dashboard");
+        if (userData) {
+          sessionStorage.setItem("user", JSON.stringify(userData));
+          this.$router.push("/dashboard");
+        } else {
+          throw new Error("Usuario no encontrado");
+        }
       } catch (err) {
         this.error =
-          err.response?.data?.message || "Correo o contraseña incorrectos";
+          err.message || err.response?.data?.message ||
+          "Correo o contraseña incorrectos";
       } finally {
         this.loading = false;
       }
