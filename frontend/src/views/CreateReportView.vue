@@ -17,10 +17,13 @@
       <v-card-title class="text-h6 font-weight-regular justify-space-between">
         <span>{{ currentTitle }}</span>
       </v-card-title>
+      <v-alert v-if="stepError" type="error" class="mx-4">
+        {{ stepError }}
+      </v-alert>
 
       <!-- Steps -->
       <v-window v-model="step" style="min-height: 700px">
-        <!-- Step 1: Info General -->
+        <!-- Step 1: Jugadores -->
         <v-window-item :value="1">
           <v-card-text>
             <v-btn
@@ -54,7 +57,12 @@
               </v-icon>
               Oponente
             </v-btn>
+          </v-card-text>
+        </v-window-item>
 
+        <!-- Step 2: Escenario -->
+        <v-window-item :value="2">
+          <v-card-text>
             <v-btn
               class="modern-btn"
               color="secondary"
@@ -126,8 +134,8 @@
           </v-card-text>
         </v-window-item>
 
-        <!-- Step 2: Magia -->
-        <v-window-item :value="2">
+        <!-- Step 3: Magia -->
+        <v-window-item :value="3">
           <v-card-text>
             <h3>Turnos de Magia - Jugador</h3>
             <v-row dense>
@@ -167,8 +175,8 @@
           </v-card-text>
         </v-window-item>
 
-        <!-- Step 3: Resultado -->
-        <v-window-item :value="3">
+        <!-- Step 4: Resultado -->
+        <v-window-item :value="4">
           <v-card-text>
             <h3>Puntos Eliminados</h3>
             <v-text-field
@@ -220,16 +228,16 @@
 
       <!-- Navegación -->
       <v-card-actions>
-        <v-btn v-if="step > 1" variant="text" class="full-btn" @click="step--">
+        <v-btn v-if="step > 1" variant="text" class="full-btn" @click="prevStep">
           Atrás
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
-          v-if="step < 3"
+          v-if="step < 4"
           color="primary"
           variant="flat"
           class="full-btn"
-          @click="step++"
+          @click="nextStep"
         >
           Siguiente
         </v-btn>
@@ -373,6 +381,7 @@ export default {
       secondaryPlayerCompleted: false,
       secondaryOpponentCompleted: false,
       saving: false,
+      stepError: null,
       saveError: null,
     };
   },
@@ -395,7 +404,12 @@ export default {
       return this.currentUser?.nombre || this.currentUser?.name || "";
     },
     currentTitle() {
-      const titles = ["Información General", "Turnos de Magia", "Resultados"];
+      const titles = [
+        "Jugadores",
+        "Escenario",
+        "Turnos de Magia",
+        "Resultados",
+      ];
       return titles[this.step - 1] || "Paso";
     },
     playerComplete() {
@@ -410,15 +424,21 @@ export default {
         this.opponentMagic.every((m) => m !== null)
       );
     },
-    canSaveReport() {
+    scenarioComplete() {
       return (
-        this.playerComplete &&
-        this.opponentComplete &&
         this.selectedMap &&
         this.selectedDeployment &&
         this.selectedPrimary &&
         this.selectedSecondaryPlayer &&
         this.selectedSecondaryOpponent
+      );
+    },
+    canSaveReport() {
+      return (
+        this.playerComplete &&
+        this.opponentComplete &&
+        this.scenarioComplete &&
+        this.magicComplete
       );
     },
     finalScore() {
@@ -528,6 +548,26 @@ export default {
           !this.opponentMagic.includes(opt.value) ||
           this.opponentMagic[index] === opt.value
       );
+    },
+    nextStep() {
+      this.stepError = null;
+      if (this.step === 1 && (!this.playerComplete || !this.opponentComplete)) {
+        this.stepError = "Completa la información de los jugadores";
+        return;
+      }
+      if (this.step === 2 && !this.scenarioComplete) {
+        this.stepError = "Completa la información del escenario";
+        return;
+      }
+      if (this.step === 3 && !this.magicComplete) {
+        this.stepError = "Completa los turnos de magia";
+        return;
+      }
+      this.step++;
+    },
+    prevStep() {
+      this.stepError = null;
+      if (this.step > 1) this.step--;
     },
     async saveReport() {
       this.saving = true;
