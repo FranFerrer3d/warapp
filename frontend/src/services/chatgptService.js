@@ -1,3 +1,4 @@
+
 import axios from 'axios'
 
 // Direct call to the OpenAI API. The API key must be provided via the
@@ -26,3 +27,4 @@ export const askChatGPT = ({ question }) => {
     }
   )
 }
+
