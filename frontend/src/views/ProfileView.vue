@@ -9,20 +9,29 @@
     <hr />
 
     <!-- Profile Edit Card -->
-    <v-card class="mx-auto" max-width="600">
+  <v-card class="mx-auto" max-width="600">
       <v-card-title class="text-h6">Mi Perfil</v-card-title>
       <v-card-text>
         <v-form ref="form" @submit.prevent="saveProfile">
+          <v-avatar v-if="player.foto" size="120" class="mx-auto mb-4">
+            <v-img :src="player.foto" alt="Foto de perfil" />
+          </v-avatar>
           <v-text-field
-            v-model="player.name"
+            v-model="player.nombre"
             :rules="[rules.required]"
             label="Nombre"
             outlined
           />
           <v-text-field
-            v-model="player.lastName"
+            v-model="player.apellidos"
             :rules="[rules.required]"
             label="Apellidos"
+            outlined
+          />
+          <v-text-field
+            v-model="player.alias"
+            :rules="[rules.required]"
+            label="Alias"
             outlined
           />
           <v-text-field
@@ -33,7 +42,7 @@
             outlined
           />
           <v-text-field
-            v-model="player.password"
+            v-model="player.contraseña"
             :rules="[rules.required]"
             label="Contraseña"
             type="password"
@@ -45,6 +54,11 @@
             @change="handlePhotoChange"
             prepend-icon="mdi-camera"
           />
+          <v-text-field
+            v-model="player.equipo"
+            label="Equipo"
+            outlined
+          />
           <v-btn
             type="submit"
             :loading="saving"
@@ -54,6 +68,9 @@
           >
             Guardar Cambios
           </v-btn>
+          <v-alert v-if="saveError" type="error" class="mt-4">
+            {{ saveError }}
+          </v-alert>
         </v-form>
       </v-card-text>
     </v-card>
@@ -64,7 +81,7 @@
         <h2 class="text-center">Reportes Creados</h2>
         <v-list>
           <v-list-item v-for="report in reports" :key="report.id">
-            <v-list-item-title>{{ formatDate(report.date) }} - {{ report.opponent?.name }}</v-list-item-title>
+            <v-list-item-title>{{ formatDate(report.date) }} - {{ report.opponent?.nombre }}</v-list-item-title>
             <template #append>
               <v-btn icon color="error" @click="confirmDelete(report)">
                 <v-icon>mdi-delete</v-icon>
@@ -99,11 +116,13 @@ export default {
   data() {
     return {
       player: {
-        name: '',
-        lastName: '',
+        nombre: '',
+        apellidos: '',
+        alias: '',
         email: '',
-        password: '',
-        photo: ''
+        contraseña: '',
+        foto: '',
+        equipo: ''
       },
       rules: {
         required: v => !!v || 'Campo obligatorio',
@@ -113,9 +132,15 @@ export default {
       saving: false,
       deleteDialog: false,
       reportToDelete: null,
+      saveError: null,
     };
   },
   created() {
+    const id = this.playerId();
+    if (!id) {
+      this.$router.push('/');
+      return;
+    }
     this.fetchPlayer();
     this.fetchReports();
   },
@@ -131,7 +156,15 @@ export default {
       if (!id) return;
       try {
         const { data } = await getPlayerById(id);
-        Object.assign(this.player, data);
+        this.player.nombre = data.nombre || data.name || '';
+        this.player.apellidos = data.apellidos || data.lastName || '';
+        this.player.alias = data.alias || '';
+        this.player.email = data.email || '';
+        this.player.equipo = data.equipo || data.team || '';
+        this.player.foto = data.foto || data.photo || '';
+        if (this.player.foto && !this.player.foto.startsWith('data:')) {
+          this.player.foto = `data:image/png;base64,${this.player.foto}`;
+        }
       } catch (err) {
         console.error('Error fetching player', err);
       }
@@ -151,12 +184,19 @@ export default {
       const isValid = this.$refs.form.validate();
       if (!isValid) return;
       this.saving = true;
+      this.saveError = null;
       const id = this.playerId();
       try {
-        await updatePlayer(id, this.player);
+        const payload = { ...this.player };
+        if (payload.foto && payload.foto.startsWith('data:')) {
+          payload.foto = payload.foto.split(',')[1];
+        }
+        await updatePlayer(id, payload);
         sessionStorage.setItem('user', JSON.stringify(this.player));
+        this.$router.push('/dashboard');
       } catch (err) {
         console.error('Error updating player', err);
+        this.saveError = 'Error actualizando perfil';
       } finally {
         this.saving = false;
       }
@@ -166,7 +206,7 @@ export default {
       const selected = Array.isArray(file) ? file[0] : file;
       const reader = new FileReader();
       reader.onload = e => {
-        this.player.photo = e.target.result;
+        this.player.foto = e.target.result;
       };
       reader.readAsDataURL(selected);
     },
