@@ -172,6 +172,9 @@
                 />
               </v-col>
             </v-row>
+            <v-btn color="info" class="mt-4" @click="chatDialog = true">
+              ¿Dudas sobre la Magia?
+            </v-btn>
           </v-card-text>
         </v-window-item>
 
@@ -325,6 +328,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <ChatbotModal v-model="chatDialog" />
   </v-container>
 </template>
 
@@ -337,14 +341,17 @@ import {
 } from "@/mock/reportOptions.js";
 import { createReport } from "@/services/reportService";
 import { getAllPlayers } from "@/services/playerService";
+import ChatbotModal from "@/components/ChatbotModal.vue";
 
 export default {
+  components: { ChatbotModal },
   data() {
     return {
       step: 1,
       reportDate: new Date().toISOString().substr(0, 10),
       playerDialog: false,
       opponentDialog: false,
+      chatDialog: false,
       player: { id: null, list: "", army: "" },
       opponent: { id: null, list: "", army: "" },
       expectedA: null,
