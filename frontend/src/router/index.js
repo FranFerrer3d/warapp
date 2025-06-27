@@ -26,6 +26,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/edit-report/:id',
+    name: 'EditReport',
+    component: CreateReportView,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/statistics',
     name: 'Statistics',
     component: StatisticsView,
