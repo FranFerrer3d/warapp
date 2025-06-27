@@ -4,6 +4,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import CreateReportView from '@/views/CreateReportView.vue'
+import EditReportView from '@/views/EditReportView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 
@@ -28,7 +29,7 @@ const routes = [
   {
     path: '/edit-report/:id',
     name: 'EditReport',
-    component: CreateReportView,
+    component: EditReportView,
     meta: { requiresAuth: true }
   },
   {
