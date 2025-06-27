@@ -4,12 +4,11 @@ This repository contains the front-end of the WarApp project. The application is
 
 ## ChatGPT integration
 
-The magic step now includes an optional chatbot modal that connects directly to the OpenAI API. To enable it you must define an API key at build time:
+The magic step now includes an optional chatbot modal that connects directly to
+the OpenAI API. The API key is provided via the `ChatBotPass` environment variable at build time:
 
 ```
-VITE_OPENAI_API_KEY=your-key-here
+ChatBotPass=your-key-here
 ```
 
-You can set this value in `.env` during development or `.env.production` for a production build.
-
-Note that exposing an OpenAI API key in a public build is not recommended for production environments.
+You can set this value in `.env` during development or `.env.production` for a production build. Additional chatbot settings such as the endpoint or model are defined in `frontend/src/config/appsettings.json`.

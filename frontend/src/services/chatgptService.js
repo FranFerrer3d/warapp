@@ -1,20 +1,19 @@
 
 import axios from 'axios'
+import appsettings from '@/config/appsettings.json'
 
-// Direct call to the OpenAI API. The API key must be provided via the
-// `VITE_OPENAI_API_KEY` environment variable at build time.
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY
+// The OpenAI API key is provided through the `ChatBotPass` environment variable.
+const OPENAI_API_KEY = import.meta.env.ChatBotPass
 
 export const askChatGPT = ({ question }) => {
   return axios.post(
-    'https://api.openai.com/v1/chat/completions',
+    appsettings.chatbot.endpoint,
     {
-      model: 'gpt-3.5-turbo',
+      model: appsettings.chatbot.model,
       messages: [
         {
           role: 'system',
-          content:
-            'Eres un experto en 9th Age y ayudas a los jugadores a resolver dudas.',
+          content: appsettings.chatbot.systemPrompt,
         },
         { role: 'user', content: question },
       ],

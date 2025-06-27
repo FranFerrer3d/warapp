@@ -5,6 +5,8 @@ import { fileURLToPath, URL } from 'url';
 
 export default defineConfig({
   base: '/', // 👈 Esto es clave para Vite en producción
+  // Expose ChatBotPass environment variable to the client
+  envPrefix: ['VITE_', 'ChatBot'],
   plugins: [
     vue(),
     vuetify({ autoImport: true })
