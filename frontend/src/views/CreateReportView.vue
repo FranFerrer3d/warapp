@@ -339,7 +339,11 @@ import {
   primaries,
   secondaries,
 } from "@/mock/reportOptions.js";
-import { createReport } from "@/services/reportService";
+import {
+  createReport,
+  updateReport,
+  getReportById,
+} from "@/services/reportService";
 import { getAllPlayers } from "@/services/playerService";
 import ChatbotModal from "@/components/ChatbotModal.vue";
 
@@ -390,6 +394,7 @@ export default {
       saving: false,
       stepError: null,
       saveError: null,
+      editId: null,
     };
   },
   created() {
@@ -404,6 +409,11 @@ export default {
         this.currentUser.Id ??
         this.currentUser.ID;
       this.player.id = playerId;
+    }
+    const editId = this.$route.params.id;
+    if (editId) {
+      this.editId = editId;
+      this.loadReport(editId);
     }
   },
   computed: {
@@ -508,6 +518,42 @@ export default {
         this.players = data;
       } catch (err) {
         console.error("Error fetching players", err);
+      }
+    },
+    async loadReport(id) {
+      try {
+        const { data } = await getReportById(id);
+        const r = data;
+        this.reportDate = r.date ? r.date.substr(0, 10) : this.reportDate;
+        this.player.id = r.playerAId;
+        this.opponent.id = r.playerBId;
+        this.player.list = r.listA;
+        this.opponent.list = r.listB;
+        this.player.army = r.armyA;
+        this.opponent.army = r.armyB;
+        this.expectedA = r.expectedA;
+        this.expectedB = r.expectedB;
+        this.selectedMap = this.maps.find((m) => m.name === r.map) || null;
+        this.selectedDeployment =
+          this.deployments.find((d) => d.name === r.deployment) || null;
+        this.selectedPrimary =
+          this.primaries.find((p) => p.name === r.primaryMission) || null;
+        this.selectedSecondaryPlayer =
+          this.secondaries.find((s) => s.name === r.secondaryA) || null;
+        this.selectedSecondaryOpponent =
+          this.secondaries.find((s) => s.name === r.secondaryB) || null;
+        this.playerMagic = Array.isArray(r.magicA) ? [...r.magicA] : [null,null,null,null,null,null];
+        this.opponentMagic = Array.isArray(r.magicB) ? [...r.magicB] : [null,null,null,null,null,null];
+        this.pointsPlayer = r.killsA;
+        this.pointsOpponent = r.killsB;
+        if (r.primaryResult === 1) this.primaryResult = 'player';
+        else if (r.primaryResult === 2) this.primaryResult = 'opponent';
+        else if (r.primaryResult === 3) this.primaryResult = 'both';
+        else this.primaryResult = 'none';
+        this.secondaryPlayerCompleted = r.secondaryWinA;
+        this.secondaryOpponentCompleted = r.secondaryWinB;
+      } catch (err) {
+        console.error('Error loading report', err);
       }
     },
     randomizeFields() {
@@ -616,7 +662,11 @@ export default {
         finalScoreB,
       };
       try {
-        await createReport(report);
+        if (this.editId) {
+          await updateReport(this.editId, report);
+        } else {
+          await createReport(report);
+        }
         this.$router.push("/dashboard");
       } catch (err) {
         console.error("Error saving report", err);

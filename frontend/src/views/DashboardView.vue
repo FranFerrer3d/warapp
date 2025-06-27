@@ -220,6 +220,14 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
+          <v-btn
+            v-if="selectedReport && selectedReport.isCreator"
+            icon
+            color="primary"
+            @click="goToEditReport(selectedReport.id)"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
           <v-btn text color="primary" @click="reportDialog = false">
             Cerrar
           </v-btn>
@@ -318,6 +326,7 @@ export default {
               isPlayerA ? r.finalScoreB : r.finalScoreA
             }`,
             primaryResult,
+            isCreator: isPlayerA,
           };
 
           console.log("Reports", res);
@@ -381,6 +390,10 @@ export default {
     openReportModal(report) {
       this.selectedReport = report;
       this.reportDialog = true;
+    },
+    goToEditReport(id) {
+      this.reportDialog = false;
+      this.$router.push(`/edit-report/${id}`);
     },
     cardClass(report) {
       const [playerScore, opponentScore] = report.finalScore
