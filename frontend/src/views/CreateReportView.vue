@@ -230,7 +230,7 @@
       <v-divider></v-divider>
 
       <!-- Navegación -->
-      <v-card-actions>
+      <v-card-actions class="sticky-actions">
         <v-btn v-if="step > 1" variant="text" class="full-btn" @click="prevStep">
           Atrás
         </v-btn>
@@ -644,6 +644,13 @@ export default {
 .modern-btn:hover {
   transform: scale(1.02);
   box-shadow: 0 0 12px #7f00ff;
+}
+
+.sticky-actions {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--v-theme-surface, #121212);
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
