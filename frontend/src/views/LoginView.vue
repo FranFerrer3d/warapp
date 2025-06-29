@@ -55,6 +55,13 @@ export default {
       loading: false,
     };
   },
+  created() {
+    const token = localStorage.getItem("token");
+    const user = sessionStorage.getItem("user");
+    if (token && user) {
+      this.$router.push("/dashboard");
+    }
+  },
   methods: {
     async handleLogin() {
       this.error = null;
