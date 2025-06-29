@@ -291,6 +291,13 @@
           />
           <v-textarea v-model="player.list" label="Lista" rows="6" outlined />
           <v-select
+            v-model="player.army"
+            :items="armies"
+            label="Ej\u00e9rcito"
+            outlined
+            class="mt-4"
+          />
+          <v-select
             v-model="expectedA"
             :items="expectedOptions"
             label="Resultado Esperado"
@@ -320,6 +327,13 @@
           />
           <v-textarea v-model="opponent.list" label="Lista" rows="6" outlined />
           <v-select
+            v-model="opponent.army"
+            :items="armies"
+            label="Ej\u00e9rcito"
+            outlined
+            class="mt-4"
+          />
+          <v-select
             v-model="expectedB"
             :items="expectedOptions"
             label="Resultado Esperado"
@@ -345,6 +359,7 @@ import {
   primaries,
   secondaries,
   armySecondaryMap,
+  armies,
 } from "@/mock/reportOptions.js";
 import {
   createReport,
@@ -373,6 +388,7 @@ export default {
       maps,
       deployments,
       primaries,
+      armies,
       secondaries,
       selectedMap: null,
       selectedDeployment: null,
@@ -565,6 +581,14 @@ export default {
       try {
         const { data } = await getAllPlayers();
         this.players = data;
+        if (this.player.id) {
+          const p = this.players.find((pl) => pl.id === this.player.id);
+          this.player.army = p?.army || this.player.army || '';
+        }
+        if (this.opponent.id) {
+          const p = this.players.find((pl) => pl.id === this.opponent.id);
+          this.opponent.army = p?.army || this.opponent.army || '';
+        }
       } catch (err) {
         console.error("Error fetching players", err);
       }

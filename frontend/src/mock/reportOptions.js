@@ -221,6 +221,26 @@ export const armySecondaryMap = {
   ]
 };
 
+export const armies = [
+  "Beast Herds",
+  "Dread Elves",
+  "Dwarven Holds",
+  "Daemon Legions",
+  "Daemons of Change",
+  "Empire of Sonnstahl",
+  "Highborn Elves",
+  "Kingdom of Equitaine",
+  "Infernal Dwarves",
+  "Ogre Khans",
+  "Orcs and Goblins",
+  "Saurian Ancients",
+  "Sylvan Elves",
+  "Undying Dynasties",
+  "Vampire Covenant",
+  "Vermin Swarm",
+  "Warriors of the Dark Gods"
+];
+
 const magicOptions = [
   { value: 1, label: '1 - 4 Magic Dice' },
   { value: 2, label: '2 - 5 Magic Dice' },
