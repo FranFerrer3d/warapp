@@ -58,6 +58,12 @@ const router = createRouter({
 // 👇 Protección de rutas privadas
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
+  const user = sessionStorage.getItem('user')
+
+  if (to.name === 'Login' && token && user) {
+    return next({ name: 'Dashboard' })
+  }
+
   if (to.meta.requiresAuth && !token) {
     return next({ name: 'Login' }) // redirige al login si no hay token
   }
