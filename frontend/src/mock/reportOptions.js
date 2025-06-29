@@ -1,19 +1,67 @@
 export const maps = [
-  { name: "Clearwater Springs", info: "Map 1 – Clearwater Springs" },
-  { name: "Ancient Fortifications", info: "Map 2 – Ancient Fortifications" },
-  { name: "Dormant Caldera", info: "Map 3 – Dormant Caldera" },
-  { name: "Abandoned Settlement", info: "Map 4 – Abandoned Settlement" },
-  { name: "Historic Battlefield", info: "Map 5 – Historic Battlefield" },
-  { name: "Mountainous Crags", info: "Map 6 – Mountainous Crags" }
+  {
+    name: "Clearwater Springs",
+    info: "Map 1 – Clearwater Springs",
+    image: "/deploys/1 - Mapa.png",
+  },
+  {
+    name: "Ancient Fortifications",
+    info: "Map 2 – Ancient Fortifications",
+    image: "/deploys/2 - Mapa.png",
+  },
+  {
+    name: "Dormant Caldera",
+    info: "Map 3 – Dormant Caldera",
+    image: "/deploys/3 - Mapa.png",
+  },
+  {
+    name: "Abandoned Settlement",
+    info: "Map 4 – Abandoned Settlement",
+    image: "/deploys/4 - Mapa.png",
+  },
+  {
+    name: "Historic Battlefield",
+    info: "Map 5 – Historic Battlefield",
+    image: "/deploys/5 - Mapa.png",
+  },
+  {
+    name: "Mountainous Crags",
+    info: "Map 6 – Mountainous Crags",
+    image: "/deploys/6 - Mapa.png",
+  },
 ];
 
 export const deployments = [
-  { name: "Frontline Clash" },
-  { name: "Bottleneck" },
-  { name: "Spearhead" },
-  { name: "Mutual Encroachment" },
-  { name: "Refused Flank" },
-  { name: "Cornerstone" }
+  {
+    name: "Frontline Clash",
+    info: "Deployment 1 – Frontline Clash",
+    image: "/deploys/1 - Despliegue.png",
+  },
+  {
+    name: "Bottleneck",
+    info: "Deployment 2 – Bottleneck",
+    image: "/deploys/2 - Despliegue.png",
+  },
+  {
+    name: "Spearhead",
+    info: "Deployment 3 – Spearhead",
+    image: "/deploys/3 - Despliegue.png",
+  },
+  {
+    name: "Mutual Encroachment",
+    info: "Deployment 4 – Mutual Encroachment",
+    image: "/deploys/4 - Despliegue.png",
+  },
+  {
+    name: "Refused Flank",
+    info: "Deployment 5 – Refused Flank",
+    image: "/deploys/5 - Despliegue.png",
+  },
+  {
+    name: "Cornerstone",
+    info: "Deployment 6 – Cornerstone",
+    image: "/deploys/6 - Despliegue.png",
+  },
 ];
 
 
