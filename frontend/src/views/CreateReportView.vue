@@ -555,6 +555,14 @@ export default {
       const p = this.players.find((pl) => pl.id === id);
       this.opponent.army = p?.army || '';
     },
+    'player.list'(list) {
+      const army = this.parseArmy(list);
+      if (army) this.player.army = army;
+    },
+    'opponent.list'(list) {
+      const army = this.parseArmy(list);
+      if (army) this.opponent.army = army;
+    },
     'player.army'() {
       if (
         this.selectedSecondaryPlayer &&
@@ -674,6 +682,14 @@ export default {
           !this.opponentMagic.includes(opt.value) ||
           this.opponentMagic[index] === opt.value
       );
+    },
+    parseArmy(list) {
+      if (!list) return null;
+      const firstLine = list.split(/\r?\n/)[0].trim();
+      if (!firstLine) return null;
+      const lineLower = firstLine.toLowerCase();
+      const found = this.armies.find((a) => lineLower.includes(a.toLowerCase()));
+      return found || null;
     },
     nextStep() {
       this.stepError = null;
