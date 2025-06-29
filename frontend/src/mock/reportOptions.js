@@ -40,6 +40,86 @@ export const secondaries = [
   { name: "Work as One" }
 ];
 
+export const armySecondaryMap = {
+  "Beast Herds": ["Capture the Flags", "Commit to Battle", "Forbid Trespass"],
+  "Dread Elves": [
+    "Capture the Flags",
+    "Demonstrate Superiority",
+    "Enslave and Ransom"
+  ],
+  "Dwarven Holds": [
+    "Capture the Flags",
+    "Enslave and Ransom",
+    "Stand Firm"
+  ],
+  "Daemon Legions": [
+    "Capture the Flags",
+    "Master the Veil",
+    "Unleash the Big Guns"
+  ],
+  "Daemons of Change": [
+    "Capture the Flags",
+    "Master the Veil",
+    "Unleash the Big Guns"
+  ],
+  "Empire of Sonnstahl": [
+    "Demonstrate Superiority",
+    "Master the Veil",
+    "Unleash the Big Guns"
+  ],
+  "Highborn Elves": [
+    "Enslave and Ransom",
+    "Master the Veil",
+    "Stand Firm"
+  ],
+  "Kingdom of Equitaine": [
+    "Demonstrate Superiority",
+    "Forbid Trespass",
+    "Settle the Score"
+  ],
+  "Infernal Dwarves": [
+    "Commit to Battle",
+    "Settle the Score",
+    "Slay the Beast"
+  ],
+  "Ogre Khans": [
+    "Enslave and Ransom",
+    "Seize and Secure",
+    "Slay the Beast"
+  ],
+  "Orcs and Goblins": [
+    "Capture the Flags",
+    "Commit to Battle",
+    "Seize and Secure"
+  ],
+  "Saurian Ancients": [
+    "Forbid Trespass",
+    "Stand Firm",
+    "Unleash the Big Guns"
+  ],
+  "Sylvan Elves": ["Settle the Score", "Slay the Beast", "Work as One"],
+  "Undying Dynasties": [
+    "Master the Veil",
+    "Settle the Score",
+    "Work as One"
+  ],
+  "Vampire Covenant": [
+    "Master the Veil",
+    "Slay the Beast",
+    "Work as One"
+  ],
+  "Vermin Swarm": [
+    "Commit to Battle",
+    "Demonstrate Superiority",
+    "Work as One"
+  ],
+  "Warriors of the Dark Gods": [
+    "Commit to Battle",
+    "Demonstrate Superiority",
+    "Unleash the Big Guns"
+  ]
+};
+
 const magicOptions = [
   { value: 1, label: '1 - 4 Magic Dice' },
   { value: 2, label: '2 - 5 Magic Dice' },
