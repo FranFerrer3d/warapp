@@ -16,13 +16,81 @@ export const deployments = [
   { name: "Cornerstone" }
 ];
 
+
 export const primaries = [
-  { name: "Spoils of War", info: "Cuando destruyes unidades enemigas, acumulas tokens..." },
-  { name: "Breakthrough", info: "Controla la zona de despliegue enemiga al final." },
-  { name: "Secure Target", info: "Controla los objetivos colocados en la línea central." },
-  { name: "Forage and Plunder", info: "Plundear terrenos estratégicos en el campo de batalla." },
-  { name: "Hold the Centre", info: "Controlar el centro del campo de batalla." },
-  { name: "Hidden Agendas", info: "Objetivos secundarios aleatorios, puntaje secreto." }
+  {
+    name: "Spoils of War",
+    info: `Preparación: No requiere.
+
+Reglas:
+Cuando una unidad Scoring enemiga es destruida en combate, el jugador que la destruyó coloca un token de botín en una de sus unidades Scoring que participó en ese combate.
+La unidad pierde todos los tokens si:
+- Pierde su último punto de vida.
+- Se desmoraliza (por ejemplo, al huir).
+
+Victoria:
+Quien tenga más tokens de botín al final del juego gana el objetivo.`
+  },
+  {
+    name: "Breakthrough",
+    info: `Preparación: Marcar las zonas de despliegue.
+
+Reglas: Ninguna adicional.
+
+Victoria:
+Al final del juego, cada jugador suma:
+- Sus unidades Scoring en la zona de despliegue enemiga.
+- Las unidades Scoring enemigas destruidas en combate.
+Quien tenga el total más alto gana el objetivo.`
+  },
+  {
+    name: "Secure Target",
+    info: `Preparación: Colocar dos marcadores en la línea media del campo, uno a cada lado del centro, a 12” de los bordes cortos y 48” entre ellos.
+
+Reglas:
+Un marcador se controla si una unidad Scoring está a 6” de su centro y no hay enemigos en esa área.
+
+Victoria:
+Al final de cada turno (turnos 3 a 6), se otorgan puntos al jugador por cada objetivo que controle.
+Gana quien tenga más puntos al final.`
+  },
+  {
+    name: "Forage and Plunder",
+    info: `Preparación: Elegir 3 elementos de terreno (no muros ni terreno impasable). Estos serán:
+- El más cercano al centro.
+- El más cercano al oponente.
+- Cada jugador selecciona uno fuera de su zona de despliegue.
+
+Reglas:
+Una unidad Scoring saquea un elemento al comenzar un turno (3 a 6) en contacto con él.
+Cada jugador puede saquear cada elemento una vez.
+
+Victoria:
+Gana quien haya saqueado más elementos al final.`
+  },
+  {
+    name: "Hold the Centre",
+    info: `Preparación: Ninguna.
+
+Reglas:
+El centro se controla si se tienen más unidades Scoring dentro de 9” del centro.
+Si hay empate, nadie lo controla.
+
+Victoria:
+Al final de los turnos 3 a 6, se otorgan puntos al jugador que controle el centro.
+Gana quien tenga más puntos al final.`
+  },
+  {
+    name: "Hidden Agendas",
+    info: `Preparación: Ninguna.
+
+Reglas:
+Cada jugador selecciona aleatoriamente dos Objetivos Secundarios, siguiendo las reglas de selección normal.
+Por cada objetivo secundario cumplido, el jugador gana 2 puntos de batalla y su oponente pierde 2 puntos de batalla.
+
+Victoria:
+Se reemplaza la puntuación normal de objetivos primarios y secundarios.`
+  }
 ];
 
 export const secondaries = [
