@@ -119,8 +119,11 @@
               :items="filteredSecondariesPlayer"
               item-title="name"
               label="Misión Secundaria Jugador"
+              return-object
               outlined
               class="mt-4"
+              append-inner-icon="mdi-information-outline"
+              @click:append-inner="openInfoDialog(selectedSecondaryPlayer?.info)"
             />
 
             <v-select
@@ -128,8 +131,11 @@
               :items="filteredSecondariesOpponent"
               item-title="name"
               label="Misión Secundaria Oponente"
+              return-object
               outlined
               class="mt-4"
+              append-inner-icon="mdi-information-outline"
+              @click:append-inner="openInfoDialog(selectedSecondaryOpponent?.info)"
             />
           </v-card-text>
         </v-window-item>
