@@ -90,7 +90,7 @@
               outlined
               class="mt-4"
               append-inner-icon="mdi-information-outline"
-              @click:append-inner="openInfoDialog(selectedMap?.info)"
+              @click:append-inner="openInfoDialog(selectedMap?.info, selectedMap?.image)"
             />
 
             <v-select
@@ -100,6 +100,8 @@
               label="Despliegue"
               outlined
               class="mt-4"
+              append-inner-icon="mdi-information-outline"
+              @click:append-inner="openInfoDialog(selectedDeployment?.info, selectedDeployment?.image)"
             />
 
             <v-select
@@ -280,7 +282,10 @@
     <v-dialog v-model="infoDialog" max-width="500px">
       <v-card>
         <v-card-title>Información</v-card-title>
-        <v-card-text>{{ currentInfo }}</v-card-text>
+        <v-card-text>
+          <v-img v-if="currentImage" :src="currentImage" class="mb-2" />
+          {{ currentInfo }}
+        </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn text @click="infoDialog = false">Cerrar</v-btn>
@@ -406,6 +411,7 @@ export default {
       selectedSecondaryOpponent: null,
       infoDialog: false,
       currentInfo: "",
+      currentImage: "",
       magicOptions: [
         { value: 1, label: "1 - 4 Magic Dice" },
         { value: 2, label: "2 - 5 Magic Dice" },
@@ -678,8 +684,9 @@ export default {
     saveOpponent() {
       this.opponentDialog = false;
     },
-    openInfoDialog(info) {
+    openInfoDialog(info, image) {
       this.currentInfo = info;
+      this.currentImage = image || "";
       this.infoDialog = true;
     },
     magicOptionsForPlayerA(index) {
