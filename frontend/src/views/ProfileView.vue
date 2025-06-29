@@ -185,13 +185,12 @@ export default {
       if (!isValid) return;
       this.saving = true;
       this.saveError = null;
-      const id = this.playerId();
       try {
         const payload = { ...this.player };
         if (payload.foto && payload.foto.startsWith('data:')) {
           payload.foto = payload.foto.split(',')[1];
         }
-        await updatePlayer(id, payload);
+        await updatePlayer(payload);
         sessionStorage.setItem('user', JSON.stringify(this.player));
         this.$router.push('/dashboard');
       } catch (err) {
