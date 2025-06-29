@@ -22,7 +22,7 @@
       </v-alert>
 
       <!-- Steps -->
-      <v-window v-model="step" style="min-height: 700px">
+      <v-window v-model="step">
         <!-- Step 1: Jugadores -->
         <v-window-item :value="1">
           <v-card-text>
