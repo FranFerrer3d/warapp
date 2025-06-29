@@ -89,7 +89,7 @@
         />
         <v-select
           v-model="selectedSecondaryPlayer"
-          :items="secondaries"
+          :items="filteredSecondariesPlayer"
           item-title="name"
           label="Misión Secundaria Jugador"
           outlined
@@ -97,7 +97,7 @@
         />
         <v-select
           v-model="selectedSecondaryOpponent"
-          :items="secondaries"
+          :items="filteredSecondariesOpponent"
           item-title="name"
           label="Misión Secundaria Oponente"
           outlined
@@ -283,6 +283,7 @@ import {
   deployments,
   primaries,
   secondaries,
+  armySecondaryMap,
 } from '@/mock/reportOptions.js'
 import {
   createReport,
@@ -383,6 +384,18 @@ export default {
         this.selectedSecondaryOpponent
       )
     },
+    filteredSecondariesPlayer() {
+      const allowed = armySecondaryMap[this.player.army]
+      return allowed
+        ? this.secondaries.filter((s) => allowed.includes(s.name))
+        : this.secondaries
+    },
+    filteredSecondariesOpponent() {
+      const allowed = armySecondaryMap[this.opponent.army]
+      return allowed
+        ? this.secondaries.filter((s) => allowed.includes(s.name))
+        : this.secondaries
+    },
     canSaveReport() {
       return (
         this.playerComplete &&
@@ -440,6 +453,36 @@ export default {
       return `${basePlayerPoints}-${baseOpponentPoints}`
     },
   },
+  watch: {
+    'player.id'(id) {
+      const p = this.players.find((pl) => pl.id === id)
+      this.player.army = p?.army || ''
+    },
+    'opponent.id'(id) {
+      const p = this.players.find((pl) => pl.id === id)
+      this.opponent.army = p?.army || ''
+    },
+    'player.army'() {
+      if (
+        this.selectedSecondaryPlayer &&
+        !this.filteredSecondariesPlayer.some(
+          (s) => s.name === this.selectedSecondaryPlayer.name
+        )
+      ) {
+        this.selectedSecondaryPlayer = null
+      }
+    },
+    'opponent.army'() {
+      if (
+        this.selectedSecondaryOpponent &&
+        !this.filteredSecondariesOpponent.some(
+          (s) => s.name === this.selectedSecondaryOpponent.name
+        )
+      ) {
+        this.selectedSecondaryOpponent = null
+      }
+    },
+  },
   methods: {
     async fetchPlayers() {
       try {
@@ -490,8 +533,8 @@ export default {
       this.selectedMap = rand(this.maps)
       this.selectedDeployment = rand(this.deployments)
       this.selectedPrimary = rand(this.primaries)
-      this.selectedSecondaryPlayer = rand(this.secondaries)
-      this.selectedSecondaryOpponent = rand(this.secondaries)
+      this.selectedSecondaryPlayer = rand(this.filteredSecondariesPlayer)
+      this.selectedSecondaryOpponent = rand(this.filteredSecondariesOpponent)
     },
     openPlayerDialog() {
       if (this.currentUser) {
