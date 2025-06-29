@@ -123,7 +123,9 @@
               outlined
               class="mt-4"
               append-inner-icon="mdi-information-outline"
-              @click:append-inner="openInfoDialog(selectedSecondaryPlayer?.info)"
+              @click:append-inner="
+                openInfoDialog(selectedSecondaryPlayer?.info)
+              "
             />
 
             <v-select
@@ -135,7 +137,9 @@
               outlined
               class="mt-4"
               append-inner-icon="mdi-information-outline"
-              @click:append-inner="openInfoDialog(selectedSecondaryOpponent?.info)"
+              @click:append-inner="
+                openInfoDialog(selectedSecondaryOpponent?.info)
+              "
             />
           </v-card-text>
         </v-window-item>
@@ -237,7 +241,12 @@
 
       <!-- Navegación -->
       <v-card-actions class="sticky-actions">
-        <v-btn v-if="step > 1" variant="text" class="full-btn" @click="prevStep">
+        <v-btn
+          v-if="step > 1"
+          variant="text"
+          class="full-btn"
+          @click="prevStep"
+        >
           Atrás
         </v-btn>
         <v-spacer></v-spacer>
@@ -293,7 +302,7 @@
           <v-select
             v-model="player.army"
             :items="armies"
-            label="Ej\u00e9rcito"
+            label="Ejército"
             outlined
             class="mt-4"
           />
@@ -329,7 +338,7 @@
           <v-select
             v-model="opponent.army"
             :items="armies"
-            label="Ej\u00e9rcito"
+            label="Ejército"
             outlined
             class="mt-4"
           />
@@ -547,23 +556,23 @@ export default {
     },
   },
   watch: {
-    'player.id'(id) {
+    "player.id"(id) {
       const p = this.players.find((pl) => pl.id === id);
-      this.player.army = p?.army || '';
+      this.player.army = p?.army || "";
     },
-    'opponent.id'(id) {
+    "opponent.id"(id) {
       const p = this.players.find((pl) => pl.id === id);
-      this.opponent.army = p?.army || '';
+      this.opponent.army = p?.army || "";
     },
-    'player.list'(list) {
+    "player.list"(list) {
       const army = this.parseArmy(list);
       if (army) this.player.army = army;
     },
-    'opponent.list'(list) {
+    "opponent.list"(list) {
       const army = this.parseArmy(list);
       if (army) this.opponent.army = army;
     },
-    'player.army'() {
+    "player.army"() {
       if (
         this.selectedSecondaryPlayer &&
         !this.filteredSecondariesPlayer.some(
@@ -573,7 +582,7 @@ export default {
         this.selectedSecondaryPlayer = null;
       }
     },
-    'opponent.army'() {
+    "opponent.army"() {
       if (
         this.selectedSecondaryOpponent &&
         !this.filteredSecondariesOpponent.some(
@@ -591,11 +600,11 @@ export default {
         this.players = data;
         if (this.player.id) {
           const p = this.players.find((pl) => pl.id === this.player.id);
-          this.player.army = p?.army || this.player.army || '';
+          this.player.army = p?.army || this.player.army || "";
         }
         if (this.opponent.id) {
           const p = this.players.find((pl) => pl.id === this.opponent.id);
-          this.opponent.army = p?.army || this.opponent.army || '';
+          this.opponent.army = p?.army || this.opponent.army || "";
         }
       } catch (err) {
         console.error("Error fetching players", err);
@@ -623,18 +632,22 @@ export default {
           this.secondaries.find((s) => s.name === r.secondaryA) || null;
         this.selectedSecondaryOpponent =
           this.secondaries.find((s) => s.name === r.secondaryB) || null;
-        this.playerMagic = Array.isArray(r.magicA) ? [...r.magicA] : [null,null,null,null,null,null];
-        this.opponentMagic = Array.isArray(r.magicB) ? [...r.magicB] : [null,null,null,null,null,null];
+        this.playerMagic = Array.isArray(r.magicA)
+          ? [...r.magicA]
+          : [null, null, null, null, null, null];
+        this.opponentMagic = Array.isArray(r.magicB)
+          ? [...r.magicB]
+          : [null, null, null, null, null, null];
         this.pointsPlayer = r.killsA;
         this.pointsOpponent = r.killsB;
-        if (r.primaryResult === 1) this.primaryResult = 'player';
-        else if (r.primaryResult === 2) this.primaryResult = 'opponent';
-        else if (r.primaryResult === 3) this.primaryResult = 'both';
-        else this.primaryResult = 'none';
+        if (r.primaryResult === 1) this.primaryResult = "player";
+        else if (r.primaryResult === 2) this.primaryResult = "opponent";
+        else if (r.primaryResult === 3) this.primaryResult = "both";
+        else this.primaryResult = "none";
         this.secondaryPlayerCompleted = r.secondaryWinA;
         this.secondaryOpponentCompleted = r.secondaryWinB;
       } catch (err) {
-        console.error('Error loading report', err);
+        console.error("Error loading report", err);
       }
     },
     randomizeFields() {
@@ -688,7 +701,9 @@ export default {
       const firstLine = list.split(/\r?\n/)[0].trim();
       if (!firstLine) return null;
       const lineLower = firstLine.toLowerCase();
-      const found = this.armies.find((a) => lineLower.includes(a.toLowerCase()));
+      const found = this.armies.find((a) =>
+        lineLower.includes(a.toLowerCase())
+      );
       return found || null;
     },
     nextStep() {
