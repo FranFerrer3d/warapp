@@ -45,7 +45,6 @@
 
 <script>
 import { login } from "@/services/authService";
-import { getPlayerByEmail } from "@/services/playerService";
 
 export default {
   data() {
@@ -65,15 +64,17 @@ export default {
           user: this.email,
           pass: this.password,
         });
-        localStorage.setItem("token", data.token);
 
-        const { data: userData } = await getPlayerByEmail(this.email);
-        if (userData) {
-          sessionStorage.setItem("user", JSON.stringify(userData));
-          this.$router.push("/dashboard");
-        } else {
-          throw new Error("Usuario no encontrado");
+        const token = data.token || data.Token;
+        if (token) {
+          localStorage.setItem("token", token);
         }
+
+        const player = data.player || data.user || data;
+        if (!player) throw new Error("Usuario no encontrado");
+
+        sessionStorage.setItem("user", JSON.stringify(player));
+        this.$router.push("/dashboard");
       } catch (err) {
         this.error =
           err.message ||
