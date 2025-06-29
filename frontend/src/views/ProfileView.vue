@@ -156,6 +156,7 @@ export default {
       if (!id) return;
       try {
         const { data } = await getPlayerById(id);
+        this.player.id = data.id || data.playerId || data.Id || data.ID;
         this.player.nombre = data.nombre || data.name || '';
         this.player.apellidos = data.apellidos || data.lastName || '';
         this.player.alias = data.alias || '';
@@ -187,11 +188,12 @@ export default {
       this.saveError = null;
       try {
         const payload = { ...this.player };
+        payload.id = payload.id || this.playerId();
         if (payload.foto && payload.foto.startsWith('data:')) {
           payload.foto = payload.foto.split(',')[1];
         }
         await updatePlayer(payload);
-        sessionStorage.setItem('user', JSON.stringify(this.player));
+        sessionStorage.setItem('user', JSON.stringify(payload));
         this.$router.push('/dashboard');
       } catch (err) {
         console.error('Error updating player', err);
