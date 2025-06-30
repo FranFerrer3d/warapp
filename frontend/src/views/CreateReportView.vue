@@ -191,7 +191,12 @@
                 />
               </v-col>
             </v-row>
-            <v-btn color="info" class="mt-4" @click="chatDialog = true">
+            <v-btn
+              color="info"
+              class="mt-4"
+              @click="chatDialog = true"
+              style="width: 100%"
+            >
               9th Age - Chat bot
             </v-btn>
           </v-card-text>
