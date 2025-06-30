@@ -154,9 +154,6 @@
             />
           </v-col>
         </v-row>
-        <v-btn color="info" class="mt-4" @click="chatDialog = true">
-          ¿Dudas sobre la Magia?
-        </v-btn>
 
         <!-- Resultado -->
         <h3 class="mt-6">Puntos Eliminados</h3>

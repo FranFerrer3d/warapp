@@ -192,7 +192,7 @@
               </v-col>
             </v-row>
             <v-btn color="info" class="mt-4" @click="chatDialog = true">
-              ¿Dudas sobre la Magia?
+              9th Age - Chat bot
             </v-btn>
           </v-card-text>
         </v-window-item>
