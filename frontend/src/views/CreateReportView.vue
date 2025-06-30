@@ -283,7 +283,7 @@
       <v-card>
         <v-card-title>Información</v-card-title>
         <v-card-text>
-          <v-img v-if="currentImage" :src="currentImage" class="mb-2" />
+          <v-img v-if="currentImage" :src="currentImage" class="mb-2 map-rotated" />
           {{ currentInfo }}
         </v-card-text>
         <v-card-actions>
@@ -437,6 +437,7 @@ export default {
   },
   created() {
     this.fetchPlayers();
+    this.loadDraft();
     const sessionUser = sessionStorage.getItem("user");
     if (sessionUser) {
       this.currentUser = JSON.parse(sessionUser);
@@ -598,8 +599,67 @@ export default {
         this.selectedSecondaryOpponent = null;
       }
     },
+    $data: {
+      handler() {
+        this.saveDraft();
+      },
+      deep: true,
+    },
   },
   methods: {
+    saveDraft() {
+      const draft = {
+        step: this.step,
+        reportDate: this.reportDate,
+        player: this.player,
+        opponent: this.opponent,
+        expectedA: this.expectedA,
+        expectedB: this.expectedB,
+        selectedMap: this.selectedMap,
+        selectedDeployment: this.selectedDeployment,
+        selectedPrimary: this.selectedPrimary,
+        selectedSecondaryPlayer: this.selectedSecondaryPlayer,
+        selectedSecondaryOpponent: this.selectedSecondaryOpponent,
+        playerMagic: this.playerMagic,
+        opponentMagic: this.opponentMagic,
+        pointsPlayer: this.pointsPlayer,
+        pointsOpponent: this.pointsOpponent,
+        primaryResult: this.primaryResult,
+        secondaryPlayerCompleted: this.secondaryPlayerCompleted,
+        secondaryOpponentCompleted: this.secondaryOpponentCompleted,
+        editId: this.editId,
+      };
+      sessionStorage.setItem('reportDraft', JSON.stringify(draft));
+    },
+
+    loadDraft() {
+      const stored = sessionStorage.getItem('reportDraft');
+      if (!stored) return;
+      try {
+        const d = JSON.parse(stored);
+        this.step = d.step ?? this.step;
+        this.reportDate = d.reportDate ?? this.reportDate;
+        if (d.player) this.player = d.player;
+        if (d.opponent) this.opponent = d.opponent;
+        this.expectedA = d.expectedA ?? this.expectedA;
+        this.expectedB = d.expectedB ?? this.expectedB;
+        this.selectedMap = d.selectedMap ?? this.selectedMap;
+        this.selectedDeployment = d.selectedDeployment ?? this.selectedDeployment;
+        this.selectedPrimary = d.selectedPrimary ?? this.selectedPrimary;
+        this.selectedSecondaryPlayer = d.selectedSecondaryPlayer ?? this.selectedSecondaryPlayer;
+        this.selectedSecondaryOpponent = d.selectedSecondaryOpponent ?? this.selectedSecondaryOpponent;
+        this.playerMagic = d.playerMagic ?? this.playerMagic;
+        this.opponentMagic = d.opponentMagic ?? this.opponentMagic;
+        this.pointsPlayer = d.pointsPlayer ?? this.pointsPlayer;
+        this.pointsOpponent = d.pointsOpponent ?? this.pointsOpponent;
+        this.primaryResult = d.primaryResult ?? this.primaryResult;
+        this.secondaryPlayerCompleted = d.secondaryPlayerCompleted ?? this.secondaryPlayerCompleted;
+        this.secondaryOpponentCompleted = d.secondaryOpponentCompleted ?? this.secondaryOpponentCompleted;
+        this.editId = d.editId ?? this.editId;
+      } catch (err) {
+        console.error('Error loading draft', err);
+      }
+    },
     async fetchPlayers() {
       try {
         const { data } = await getAllPlayers();
@@ -778,6 +838,7 @@ export default {
         } else {
           await createReport(report);
         }
+        sessionStorage.removeItem('reportDraft');
         this.$router.push("/dashboard");
       } catch (err) {
         console.error("Error saving report", err);
@@ -812,6 +873,10 @@ export default {
   bottom: 0;
   background-color: var(--v-theme-surface, #121212);
   z-index: 1;
+}
+
+.map-rotated {
+  transform: rotate(90deg);
 }
 
 @media (max-width: 768px) {
