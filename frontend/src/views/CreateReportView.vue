@@ -90,7 +90,9 @@
               outlined
               class="mt-4"
               append-inner-icon="mdi-information-outline"
-              @click:append-inner="openInfoDialog(selectedMap?.info, selectedMap?.image)"
+              @click:append-inner="
+                openInfoDialog(selectedMap?.info, selectedMap?.image)
+              "
             />
 
             <v-select
@@ -101,7 +103,12 @@
               outlined
               class="mt-4"
               append-inner-icon="mdi-information-outline"
-              @click:append-inner="openInfoDialog(selectedDeployment?.info, selectedDeployment?.image)"
+              @click:append-inner="
+                openInfoDialog(
+                  selectedDeployment?.info,
+                  selectedDeployment?.image
+                )
+              "
             />
 
             <v-select
@@ -283,7 +290,11 @@
       <v-card>
         <v-card-title>Información</v-card-title>
         <v-card-text>
-          <v-img v-if="currentImage" :src="currentImage" class="mb-2 map-rotated" />
+          <v-img
+            v-if="currentImage"
+            :src="currentImage"
+            class="mb-2 map-rotated"
+          />
           {{ currentInfo }}
         </v-card-text>
         <v-card-actions>
@@ -629,11 +640,11 @@ export default {
         secondaryOpponentCompleted: this.secondaryOpponentCompleted,
         editId: this.editId,
       };
-      sessionStorage.setItem('reportDraft', JSON.stringify(draft));
+      sessionStorage.setItem("reportDraft", JSON.stringify(draft));
     },
 
     loadDraft() {
-      const stored = sessionStorage.getItem('reportDraft');
+      const stored = sessionStorage.getItem("reportDraft");
       if (!stored) return;
       try {
         const d = JSON.parse(stored);
@@ -644,20 +655,25 @@ export default {
         this.expectedA = d.expectedA ?? this.expectedA;
         this.expectedB = d.expectedB ?? this.expectedB;
         this.selectedMap = d.selectedMap ?? this.selectedMap;
-        this.selectedDeployment = d.selectedDeployment ?? this.selectedDeployment;
+        this.selectedDeployment =
+          d.selectedDeployment ?? this.selectedDeployment;
         this.selectedPrimary = d.selectedPrimary ?? this.selectedPrimary;
-        this.selectedSecondaryPlayer = d.selectedSecondaryPlayer ?? this.selectedSecondaryPlayer;
-        this.selectedSecondaryOpponent = d.selectedSecondaryOpponent ?? this.selectedSecondaryOpponent;
+        this.selectedSecondaryPlayer =
+          d.selectedSecondaryPlayer ?? this.selectedSecondaryPlayer;
+        this.selectedSecondaryOpponent =
+          d.selectedSecondaryOpponent ?? this.selectedSecondaryOpponent;
         this.playerMagic = d.playerMagic ?? this.playerMagic;
         this.opponentMagic = d.opponentMagic ?? this.opponentMagic;
         this.pointsPlayer = d.pointsPlayer ?? this.pointsPlayer;
         this.pointsOpponent = d.pointsOpponent ?? this.pointsOpponent;
         this.primaryResult = d.primaryResult ?? this.primaryResult;
-        this.secondaryPlayerCompleted = d.secondaryPlayerCompleted ?? this.secondaryPlayerCompleted;
-        this.secondaryOpponentCompleted = d.secondaryOpponentCompleted ?? this.secondaryOpponentCompleted;
+        this.secondaryPlayerCompleted =
+          d.secondaryPlayerCompleted ?? this.secondaryPlayerCompleted;
+        this.secondaryOpponentCompleted =
+          d.secondaryOpponentCompleted ?? this.secondaryOpponentCompleted;
         this.editId = d.editId ?? this.editId;
       } catch (err) {
-        console.error('Error loading draft', err);
+        console.error("Error loading draft", err);
       }
     },
     async fetchPlayers() {
@@ -838,7 +854,7 @@ export default {
         } else {
           await createReport(report);
         }
-        sessionStorage.removeItem('reportDraft');
+        sessionStorage.removeItem("reportDraft");
         this.$router.push("/dashboard");
       } catch (err) {
         console.error("Error saving report", err);
@@ -873,10 +889,6 @@ export default {
   bottom: 0;
   background-color: var(--v-theme-surface, #121212);
   z-index: 1;
-}
-
-.map-rotated {
-  transform: rotate(90deg);
 }
 
 @media (max-width: 768px) {

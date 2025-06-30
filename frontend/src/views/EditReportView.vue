@@ -23,7 +23,11 @@
           outlined
         >
           <v-icon start>
-            {{ playerComplete ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline' }}
+            {{
+              playerComplete
+                ? "mdi-check-circle"
+                : "mdi-checkbox-blank-circle-outline"
+            }}
           </v-icon>
           Jugador
         </v-btn>
@@ -34,7 +38,11 @@
           outlined
         >
           <v-icon start>
-            {{ opponentComplete ? 'mdi-check-circle' : 'mdi-checkbox-blank-circle-outline' }}
+            {{
+              opponentComplete
+                ? "mdi-check-circle"
+                : "mdi-checkbox-blank-circle-outline"
+            }}
           </v-icon>
           Oponente
         </v-btn>
@@ -66,7 +74,9 @@
           outlined
           class="mt-4"
           append-inner-icon="mdi-information-outline"
-          @click:append-inner="openInfoDialog(selectedMap?.info, selectedMap?.image)"
+          @click:append-inner="
+            openInfoDialog(selectedMap?.info, selectedMap?.image)
+          "
         />
         <v-select
           v-model="selectedDeployment"
@@ -76,7 +86,9 @@
           outlined
           class="mt-4"
           append-inner-icon="mdi-information-outline"
-          @click:append-inner="openInfoDialog(selectedDeployment?.info, selectedDeployment?.image)"
+          @click:append-inner="
+            openInfoDialog(selectedDeployment?.info, selectedDeployment?.image)
+          "
         />
         <v-select
           v-model="selectedPrimary"
@@ -213,7 +225,11 @@
       <v-card>
         <v-card-title>Información</v-card-title>
         <v-card-text>
-          <v-img v-if="currentImage" :src="currentImage" class="mb-2 map-rotated" />
+          <v-img
+            v-if="currentImage"
+            :src="currentImage"
+            class="mb-2 map-rotated"
+          />
           {{ currentInfo }}
         </v-card-text>
         <v-card-actions>
@@ -304,14 +320,14 @@ import {
   secondaries,
   armySecondaryMap,
   armies,
-} from '@/mock/reportOptions.js'
+} from "@/mock/reportOptions.js";
 import {
   createReport,
   updateReport,
   getReportById,
-} from '@/services/reportService'
-import { getAllPlayers } from '@/services/playerService'
-import ChatbotModal from '@/components/ChatbotModal.vue'
+} from "@/services/reportService";
+import { getAllPlayers } from "@/services/playerService";
+import ChatbotModal from "@/components/ChatbotModal.vue";
 
 export default {
   components: { ChatbotModal },
@@ -321,8 +337,8 @@ export default {
       playerDialog: false,
       opponentDialog: false,
       chatDialog: false,
-      player: { id: null, list: '', army: '' },
-      opponent: { id: null, list: '', army: '' },
+      player: { id: null, list: "", army: "" },
+      opponent: { id: null, list: "", army: "" },
       expectedA: null,
       expectedB: null,
       expectedOptions: Array.from({ length: 21 }, (_, i) => i),
@@ -339,17 +355,17 @@ export default {
       selectedSecondaryPlayer: null,
       selectedSecondaryOpponent: null,
       infoDialog: false,
-      currentInfo: '',
-      currentImage: '',
+      currentInfo: "",
+      currentImage: "",
       magicOptions: [
-        { value: 1, label: '1 - 4 Magic Dice' },
-        { value: 2, label: '2 - 5 Magic Dice' },
-        { value: 3, label: '3 - 6 Magic Dice' },
-        { value: 4, label: '4 - 6 Magic Dice' },
-        { value: 5, label: '5 - 5 Magic Dice' },
-        { value: 6, label: '6 - 5 Magic Dice' },
-        { value: 7, label: '7 - 6 Magic Dice' },
-        { value: 8, label: '8 - 7 Magic Dice' },
+        { value: 1, label: "1 - 4 Magic Dice" },
+        { value: 2, label: "2 - 5 Magic Dice" },
+        { value: 3, label: "3 - 6 Magic Dice" },
+        { value: 4, label: "4 - 6 Magic Dice" },
+        { value: 5, label: "5 - 5 Magic Dice" },
+        { value: 6, label: "6 - 5 Magic Dice" },
+        { value: 7, label: "7 - 6 Magic Dice" },
+        { value: 8, label: "8 - 7 Magic Dice" },
       ],
       playerMagic: [null, null, null, null, null, null],
       opponentMagic: [null, null, null, null, null, null],
@@ -361,42 +377,42 @@ export default {
       saving: false,
       saveError: null,
       editId: null,
-    }
+    };
   },
   created() {
-    this.fetchPlayers()
-    this.loadDraft()
-    const sessionUser = sessionStorage.getItem('user')
+    this.fetchPlayers();
+    this.loadDraft();
+    const sessionUser = sessionStorage.getItem("user");
     if (sessionUser) {
-      this.currentUser = JSON.parse(sessionUser)
+      this.currentUser = JSON.parse(sessionUser);
       const playerId =
         this.currentUser.id ??
         this.currentUser.playerId ??
         this.currentUser.Id ??
-        this.currentUser.ID
-      this.player.id = playerId
+        this.currentUser.ID;
+      this.player.id = playerId;
     }
-    const editId = this.$route.params.id
+    const editId = this.$route.params.id;
     if (editId) {
-      this.editId = editId
-      this.loadReport(editId)
+      this.editId = editId;
+      this.loadReport(editId);
     }
   },
   computed: {
     currentUserName() {
-      return this.currentUser?.nombre || this.currentUser?.name || ''
+      return this.currentUser?.nombre || this.currentUser?.name || "";
     },
     playerComplete() {
-      return this.player.id && this.player.list && this.expectedA !== null
+      return this.player.id && this.player.list && this.expectedA !== null;
     },
     opponentComplete() {
-      return this.opponent.id && this.opponent.list && this.expectedB !== null
+      return this.opponent.id && this.opponent.list && this.expectedB !== null;
     },
     magicComplete() {
       return (
         this.playerMagic.every((m) => m !== null) &&
         this.opponentMagic.every((m) => m !== null)
-      )
+      );
     },
     scenarioComplete() {
       return (
@@ -405,19 +421,19 @@ export default {
         this.selectedPrimary &&
         this.selectedSecondaryPlayer &&
         this.selectedSecondaryOpponent
-      )
+      );
     },
     filteredSecondariesPlayer() {
-      const allowed = armySecondaryMap[this.player.army]
+      const allowed = armySecondaryMap[this.player.army];
       return allowed
         ? this.secondaries.filter((s) => allowed.includes(s.name))
-        : this.secondaries
+        : this.secondaries;
     },
     filteredSecondariesOpponent() {
-      const allowed = armySecondaryMap[this.opponent.army]
+      const allowed = armySecondaryMap[this.opponent.army];
       return allowed
         ? this.secondaries.filter((s) => allowed.includes(s.name))
-        : this.secondaries
+        : this.secondaries;
     },
     canSaveReport() {
       return (
@@ -425,97 +441,101 @@ export default {
         this.opponentComplete &&
         this.scenarioComplete &&
         this.magicComplete
-      )
+      );
     },
     finalScore() {
-      if (this.pointsPlayer === null || this.pointsOpponent === null) return null
+      if (this.pointsPlayer === null || this.pointsOpponent === null)
+        return null;
 
-      const totalPoints = 4000
-      const diff = Math.abs(this.pointsPlayer - this.pointsOpponent)
-      const percent = (diff / totalPoints) * 100
+      const totalPoints = 4000;
+      const diff = Math.abs(this.pointsPlayer - this.pointsOpponent);
+      const percent = (diff / totalPoints) * 100;
 
-      let basePlayerPoints = 10
+      let basePlayerPoints = 10;
 
-      if (percent <= 5) basePlayerPoints = 10
-      else if (percent <= 10) basePlayerPoints = 11
-      else if (percent <= 20) basePlayerPoints = 12
-      else if (percent <= 30) basePlayerPoints = 13
-      else if (percent <= 40) basePlayerPoints = 14
-      else if (percent <= 50) basePlayerPoints = 15
-      else basePlayerPoints = 16
+      if (percent <= 5) basePlayerPoints = 10;
+      else if (percent <= 10) basePlayerPoints = 11;
+      else if (percent <= 20) basePlayerPoints = 12;
+      else if (percent <= 30) basePlayerPoints = 13;
+      else if (percent <= 40) basePlayerPoints = 14;
+      else if (percent <= 50) basePlayerPoints = 15;
+      else basePlayerPoints = 16;
 
       if (this.pointsPlayer > this.pointsOpponent) {
-        basePlayerPoints = basePlayerPoints
+        basePlayerPoints = basePlayerPoints;
       } else if (this.pointsOpponent > this.pointsPlayer) {
-        basePlayerPoints = 20 - basePlayerPoints
+        basePlayerPoints = 20 - basePlayerPoints;
       } else {
-        basePlayerPoints = 10
+        basePlayerPoints = 10;
       }
 
-      let baseOpponentPoints = 20 - basePlayerPoints
+      let baseOpponentPoints = 20 - basePlayerPoints;
 
-      if (this.primaryResult === 'player') {
-        basePlayerPoints += 3
-        baseOpponentPoints -= 3
-      } else if (this.primaryResult === 'opponent') {
-        basePlayerPoints -= 3
-        baseOpponentPoints += 3
+      if (this.primaryResult === "player") {
+        basePlayerPoints += 3;
+        baseOpponentPoints -= 3;
+      } else if (this.primaryResult === "opponent") {
+        basePlayerPoints -= 3;
+        baseOpponentPoints += 3;
       }
 
       if (this.secondaryPlayerCompleted && !this.secondaryOpponentCompleted) {
-        basePlayerPoints += 1
-        baseOpponentPoints -= 1
-      } else if (!this.secondaryPlayerCompleted && this.secondaryOpponentCompleted) {
-        basePlayerPoints -= 1
-        baseOpponentPoints += 1
+        basePlayerPoints += 1;
+        baseOpponentPoints -= 1;
+      } else if (
+        !this.secondaryPlayerCompleted &&
+        this.secondaryOpponentCompleted
+      ) {
+        basePlayerPoints -= 1;
+        baseOpponentPoints += 1;
       }
 
-      basePlayerPoints = Math.min(Math.max(basePlayerPoints, 0), 20)
-      baseOpponentPoints = 20 - basePlayerPoints
+      basePlayerPoints = Math.min(Math.max(basePlayerPoints, 0), 20);
+      baseOpponentPoints = 20 - basePlayerPoints;
 
-      return `${basePlayerPoints}-${baseOpponentPoints}`
+      return `${basePlayerPoints}-${baseOpponentPoints}`;
     },
   },
   watch: {
-    'player.id'(id) {
-      const p = this.players.find((pl) => pl.id === id)
-      this.player.army = p?.army || ''
+    "player.id"(id) {
+      const p = this.players.find((pl) => pl.id === id);
+      this.player.army = p?.army || "";
     },
-    'opponent.id'(id) {
-      const p = this.players.find((pl) => pl.id === id)
-      this.opponent.army = p?.army || ''
+    "opponent.id"(id) {
+      const p = this.players.find((pl) => pl.id === id);
+      this.opponent.army = p?.army || "";
     },
-    'player.list'(list) {
-      const army = this.parseArmy(list)
-      if (army) this.player.army = army
+    "player.list"(list) {
+      const army = this.parseArmy(list);
+      if (army) this.player.army = army;
     },
-    'opponent.list'(list) {
-      const army = this.parseArmy(list)
-      if (army) this.opponent.army = army
+    "opponent.list"(list) {
+      const army = this.parseArmy(list);
+      if (army) this.opponent.army = army;
     },
-    'player.army'() {
+    "player.army"() {
       if (
         this.selectedSecondaryPlayer &&
         !this.filteredSecondariesPlayer.some(
           (s) => s.name === this.selectedSecondaryPlayer.name
         )
       ) {
-        this.selectedSecondaryPlayer = null
+        this.selectedSecondaryPlayer = null;
       }
     },
-    'opponent.army'() {
+    "opponent.army"() {
       if (
         this.selectedSecondaryOpponent &&
         !this.filteredSecondariesOpponent.some(
           (s) => s.name === this.selectedSecondaryOpponent.name
         )
       ) {
-        this.selectedSecondaryOpponent = null
+        this.selectedSecondaryOpponent = null;
       }
     },
     $data: {
       handler() {
-        this.saveDraft()
+        this.saveDraft();
       },
       deep: true,
     },
@@ -541,97 +561,106 @@ export default {
         secondaryPlayerCompleted: this.secondaryPlayerCompleted,
         secondaryOpponentCompleted: this.secondaryOpponentCompleted,
         editId: this.editId,
-      }
-      sessionStorage.setItem('reportDraft', JSON.stringify(draft))
+      };
+      sessionStorage.setItem("reportDraft", JSON.stringify(draft));
     },
 
     loadDraft() {
-      const stored = sessionStorage.getItem('reportDraft')
-      if (!stored) return
+      const stored = sessionStorage.getItem("reportDraft");
+      if (!stored) return;
       try {
-        const d = JSON.parse(stored)
-        this.reportDate = d.reportDate ?? this.reportDate
-        if (d.player) this.player = d.player
-        if (d.opponent) this.opponent = d.opponent
-        this.expectedA = d.expectedA ?? this.expectedA
-        this.expectedB = d.expectedB ?? this.expectedB
-        this.selectedMap = d.selectedMap ?? this.selectedMap
-        this.selectedDeployment = d.selectedDeployment ?? this.selectedDeployment
-        this.selectedPrimary = d.selectedPrimary ?? this.selectedPrimary
-        this.selectedSecondaryPlayer = d.selectedSecondaryPlayer ?? this.selectedSecondaryPlayer
-        this.selectedSecondaryOpponent = d.selectedSecondaryOpponent ?? this.selectedSecondaryOpponent
-        this.playerMagic = d.playerMagic ?? this.playerMagic
-        this.opponentMagic = d.opponentMagic ?? this.opponentMagic
-        this.pointsPlayer = d.pointsPlayer ?? this.pointsPlayer
-        this.pointsOpponent = d.pointsOpponent ?? this.pointsOpponent
-        this.primaryResult = d.primaryResult ?? this.primaryResult
-        this.secondaryPlayerCompleted = d.secondaryPlayerCompleted ?? this.secondaryPlayerCompleted
-        this.secondaryOpponentCompleted = d.secondaryOpponentCompleted ?? this.secondaryOpponentCompleted
-        this.editId = d.editId ?? this.editId
+        const d = JSON.parse(stored);
+        this.reportDate = d.reportDate ?? this.reportDate;
+        if (d.player) this.player = d.player;
+        if (d.opponent) this.opponent = d.opponent;
+        this.expectedA = d.expectedA ?? this.expectedA;
+        this.expectedB = d.expectedB ?? this.expectedB;
+        this.selectedMap = d.selectedMap ?? this.selectedMap;
+        this.selectedDeployment =
+          d.selectedDeployment ?? this.selectedDeployment;
+        this.selectedPrimary = d.selectedPrimary ?? this.selectedPrimary;
+        this.selectedSecondaryPlayer =
+          d.selectedSecondaryPlayer ?? this.selectedSecondaryPlayer;
+        this.selectedSecondaryOpponent =
+          d.selectedSecondaryOpponent ?? this.selectedSecondaryOpponent;
+        this.playerMagic = d.playerMagic ?? this.playerMagic;
+        this.opponentMagic = d.opponentMagic ?? this.opponentMagic;
+        this.pointsPlayer = d.pointsPlayer ?? this.pointsPlayer;
+        this.pointsOpponent = d.pointsOpponent ?? this.pointsOpponent;
+        this.primaryResult = d.primaryResult ?? this.primaryResult;
+        this.secondaryPlayerCompleted =
+          d.secondaryPlayerCompleted ?? this.secondaryPlayerCompleted;
+        this.secondaryOpponentCompleted =
+          d.secondaryOpponentCompleted ?? this.secondaryOpponentCompleted;
+        this.editId = d.editId ?? this.editId;
       } catch (err) {
-        console.error('Error loading draft', err)
+        console.error("Error loading draft", err);
       }
     },
 
     async fetchPlayers() {
       try {
-        const { data } = await getAllPlayers()
-        this.players = data
+        const { data } = await getAllPlayers();
+        this.players = data;
         if (this.player.id) {
-          const p = this.players.find((pl) => pl.id === this.player.id)
-          this.player.army = p?.army || this.player.army || ''
+          const p = this.players.find((pl) => pl.id === this.player.id);
+          this.player.army = p?.army || this.player.army || "";
         }
         if (this.opponent.id) {
-          const p = this.players.find((pl) => pl.id === this.opponent.id)
-          this.opponent.army = p?.army || this.opponent.army || ''
+          const p = this.players.find((pl) => pl.id === this.opponent.id);
+          this.opponent.army = p?.army || this.opponent.army || "";
         }
       } catch (err) {
-        console.error('Error fetching players', err)
+        console.error("Error fetching players", err);
       }
     },
     async loadReport(id) {
       try {
-        const { data } = await getReportById(id)
-        const r = data
-        this.reportDate = r.date ? r.date.substr(0, 10) : this.reportDate
-        this.player.id = r.playerAId
-        this.opponent.id = r.playerBId
-        this.player.list = r.listA
-        this.opponent.list = r.listB
-        this.player.army = r.armyA
-        this.opponent.army = r.armyB
-        this.expectedA = r.expectedA
-        this.expectedB = r.expectedB
-        this.selectedMap = this.maps.find((m) => m.name === r.map) || null
+        const { data } = await getReportById(id);
+        const r = data;
+        this.reportDate = r.date ? r.date.substr(0, 10) : this.reportDate;
+        this.player.id = r.playerAId;
+        this.opponent.id = r.playerBId;
+        this.player.list = r.listA;
+        this.opponent.list = r.listB;
+        this.player.army = r.armyA;
+        this.opponent.army = r.armyB;
+        this.expectedA = r.expectedA;
+        this.expectedB = r.expectedB;
+        this.selectedMap = this.maps.find((m) => m.name === r.map) || null;
         this.selectedDeployment =
-          this.deployments.find((d) => d.name === r.deployment) || null
+          this.deployments.find((d) => d.name === r.deployment) || null;
         this.selectedPrimary =
-          this.primaries.find((p) => p.name === r.primaryMission) || null
+          this.primaries.find((p) => p.name === r.primaryMission) || null;
         this.selectedSecondaryPlayer =
-          this.secondaries.find((s) => s.name === r.secondaryA) || null
+          this.secondaries.find((s) => s.name === r.secondaryA) || null;
         this.selectedSecondaryOpponent =
-          this.secondaries.find((s) => s.name === r.secondaryB) || null
-        this.playerMagic = Array.isArray(r.magicA) ? [...r.magicA] : [null, null, null, null, null, null]
-        this.opponentMagic = Array.isArray(r.magicB) ? [...r.magicB] : [null, null, null, null, null, null]
-        this.pointsPlayer = r.killsA
-        this.pointsOpponent = r.killsB
-        if (r.primaryResult === 1) this.primaryResult = 'player'
-        else if (r.primaryResult === 2) this.primaryResult = 'opponent'
-        else if (r.primaryResult === 3) this.primaryResult = 'both'
-        else this.primaryResult = 'none'
-        this.secondaryPlayerCompleted = r.secondaryWinA
-        this.secondaryOpponentCompleted = r.secondaryWinB
+          this.secondaries.find((s) => s.name === r.secondaryB) || null;
+        this.playerMagic = Array.isArray(r.magicA)
+          ? [...r.magicA]
+          : [null, null, null, null, null, null];
+        this.opponentMagic = Array.isArray(r.magicB)
+          ? [...r.magicB]
+          : [null, null, null, null, null, null];
+        this.pointsPlayer = r.killsA;
+        this.pointsOpponent = r.killsB;
+        if (r.primaryResult === 1) this.primaryResult = "player";
+        else if (r.primaryResult === 2) this.primaryResult = "opponent";
+        else if (r.primaryResult === 3) this.primaryResult = "both";
+        else this.primaryResult = "none";
+        this.secondaryPlayerCompleted = r.secondaryWinA;
+        this.secondaryOpponentCompleted = r.secondaryWinB;
       } catch (err) {
-        console.error('Error loading report', err)
+        console.error("Error loading report", err);
       }
     },
     randomizeFields() {
-      const rand = (arr) => arr[Math.floor(Math.random() * arr.length)]
-      this.selectedMap = rand(this.maps)
-      this.selectedDeployment = rand(this.deployments)
-      this.selectedPrimary = rand(this.primaries)
-      this.selectedSecondaryPlayer = rand(this.filteredSecondariesPlayer)
-      this.selectedSecondaryOpponent = rand(this.filteredSecondariesOpponent)
+      const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      this.selectedMap = rand(this.maps);
+      this.selectedDeployment = rand(this.deployments);
+      this.selectedPrimary = rand(this.primaries);
+      this.selectedSecondaryPlayer = rand(this.filteredSecondariesPlayer);
+      this.selectedSecondaryOpponent = rand(this.filteredSecondariesOpponent);
     },
     openPlayerDialog() {
       if (this.currentUser) {
@@ -639,57 +668,63 @@ export default {
           this.currentUser.id ??
           this.currentUser.playerId ??
           this.currentUser.Id ??
-          this.currentUser.ID
-        this.player.id = playerId
+          this.currentUser.ID;
+        this.player.id = playerId;
       }
-      this.playerDialog = true
+      this.playerDialog = true;
     },
     openOpponentDialog() {
-      this.opponentDialog = true
+      this.opponentDialog = true;
     },
     savePlayer() {
-      this.playerDialog = false
+      this.playerDialog = false;
     },
     saveOpponent() {
-      this.opponentDialog = false
+      this.opponentDialog = false;
     },
     openInfoDialog(info, image) {
-      this.currentInfo = info
-      this.currentImage = image || ''
-      this.infoDialog = true
+      this.currentInfo = info;
+      this.currentImage = image || "";
+      this.infoDialog = true;
     },
     magicOptionsForPlayerA(index) {
       return this.magicOptions.filter(
-        (opt) => !this.playerMagic.includes(opt.value) || this.playerMagic[index] === opt.value
-      )
+        (opt) =>
+          !this.playerMagic.includes(opt.value) ||
+          this.playerMagic[index] === opt.value
+      );
     },
     magicOptionsForPlayerB(index) {
       return this.magicOptions.filter(
-        (opt) => !this.opponentMagic.includes(opt.value) || this.opponentMagic[index] === opt.value
-      )
+        (opt) =>
+          !this.opponentMagic.includes(opt.value) ||
+          this.opponentMagic[index] === opt.value
+      );
     },
     parseArmy(list) {
-      if (!list) return null
-      const firstLine = list.split(/\r?\n/)[0].trim()
-      if (!firstLine) return null
-      const lineLower = firstLine.toLowerCase()
-      const found = this.armies.find((a) => lineLower.includes(a.toLowerCase()))
-      return found || null
+      if (!list) return null;
+      const firstLine = list.split(/\r?\n/)[0].trim();
+      if (!firstLine) return null;
+      const lineLower = firstLine.toLowerCase();
+      const found = this.armies.find((a) =>
+        lineLower.includes(a.toLowerCase())
+      );
+      return found || null;
     },
     async saveReport() {
-      this.saving = true
-      this.saveError = null
+      this.saving = true;
+      this.saveError = null;
       const [finalScoreA, finalScoreB] = this.finalScore
-        ? this.finalScore.split('-').map((n) => parseInt(n))
-        : [0, 0]
+        ? this.finalScore.split("-").map((n) => parseInt(n))
+        : [0, 0];
 
       const report = {
         PlayerAId: this.player.id,
         PlayerBId: this.opponent.id,
         listA: this.player.list,
         listB: this.opponent.list,
-        armyA: this.player.army || '',
-        armyB: this.opponent.army || '',
+        armyA: this.player.army || "",
+        armyB: this.opponent.army || "",
         expectedA: this.expectedA,
         expectedB: this.expectedB,
         date: new Date(this.reportDate).toISOString(),
@@ -703,34 +738,34 @@ export default {
         killsA: this.pointsPlayer,
         killsB: this.pointsOpponent,
         primaryResult:
-          this.primaryResult === 'player'
-            ? 'PlayerA'
-            : this.primaryResult === 'opponent'
-            ? 'PlayerB'
-            : this.primaryResult === 'both'
-            ? 'Both'
-            : 'None',
+          this.primaryResult === "player"
+            ? "PlayerA"
+            : this.primaryResult === "opponent"
+            ? "PlayerB"
+            : this.primaryResult === "both"
+            ? "Both"
+            : "None",
         secondaryWinA: this.secondaryPlayerCompleted,
         secondaryWinB: this.secondaryOpponentCompleted,
         finalScoreA,
         finalScoreB,
-      }
+      };
       try {
         if (this.editId) {
-          await updateReport(this.editId, report)
+          await updateReport(this.editId, report);
         } else {
-          await createReport(report)
+          await createReport(report);
         }
-        sessionStorage.removeItem('reportDraft')
-        this.$router.push('/dashboard')
+        sessionStorage.removeItem("reportDraft");
+        this.$router.push("/dashboard");
       } catch (err) {
-        console.error('Error saving report', err)
-        this.saveError = 'Error guardando reporte'
+        console.error("Error saving report", err);
+        this.saveError = "Error guardando reporte";
       }
-      this.saving = false
+      this.saving = false;
     },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -749,9 +784,5 @@ export default {
 .modern-btn:hover {
   transform: scale(1.02);
   box-shadow: 0 0 12px #7f00ff;
-}
-
-.map-rotated {
-  transform: rotate(90deg);
 }
 </style>
