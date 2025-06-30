@@ -173,6 +173,15 @@
                 />
               </v-col>
             </v-row>
+            <v-btn
+              class="modern-btn mt-2"
+              color="secondary"
+              outlined
+              @click="randomNextPlayerMagic"
+            >
+              <v-icon start>mdi-dice-multiple</v-icon>
+              Siguiente Aleatorio
+            </v-btn>
 
             <h3 class="mt-6">Turnos de Magia - Oponente</h3>
             <v-row dense>
@@ -191,6 +200,15 @@
                 />
               </v-col>
             </v-row>
+            <v-btn
+              class="modern-btn mt-2"
+              color="secondary"
+              outlined
+              @click="randomNextOpponentMagic"
+            >
+              <v-icon start>mdi-dice-multiple</v-icon>
+              Siguiente Aleatorio
+            </v-btn>
             <v-btn
               color="info"
               class="mt-4"
@@ -783,6 +801,22 @@ export default {
           !this.opponentMagic.includes(opt.value) ||
           this.opponentMagic[index] === opt.value
       );
+    },
+    randomNextPlayerMagic() {
+      const idx = this.playerMagic.findIndex((m) => m === null);
+      if (idx === -1) return;
+      const opts = this.magicOptionsForPlayerA(idx);
+      if (!opts.length) return;
+      const choice = opts[Math.floor(Math.random() * opts.length)];
+      this.playerMagic[idx] = choice.value;
+    },
+    randomNextOpponentMagic() {
+      const idx = this.opponentMagic.findIndex((m) => m === null);
+      if (idx === -1) return;
+      const opts = this.magicOptionsForPlayerB(idx);
+      if (!opts.length) return;
+      const choice = opts[Math.floor(Math.random() * opts.length)];
+      this.opponentMagic[idx] = choice.value;
     },
     parseArmy(list) {
       if (!list) return null;
