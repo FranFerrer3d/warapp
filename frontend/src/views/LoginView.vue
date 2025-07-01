@@ -56,7 +56,7 @@ export default {
     };
   },
   created() {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const user = sessionStorage.getItem("user");
     if (token && user) {
       this.$router.push("/dashboard");
@@ -74,7 +74,7 @@ export default {
 
         const token = data.token || data.Token;
         if (token) {
-          localStorage.setItem("token", token);
+          sessionStorage.setItem("token", token);
         }
 
         const player = data.player || data.user || data;

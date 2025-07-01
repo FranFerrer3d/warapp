@@ -8,11 +8,16 @@ const api = axios.create({
 
 // Añadimos el token de autenticación a cada petición si está disponible
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+export const authHeaders = () => {
+  const token = sessionStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 export default api;
