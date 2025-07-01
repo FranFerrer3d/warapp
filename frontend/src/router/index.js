@@ -7,6 +7,7 @@ import CreateReportView from '@/views/CreateReportView.vue'
 import EditReportView from '@/views/EditReportView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import TeamManagementView from '@/views/TeamManagementView.vue'
 
 const routes = [
   {
@@ -45,6 +46,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/team-management',
+    name: 'TeamManagement',
+    component: TeamManagementView,
+    meta: { requiresAuth: true, allowedRoles: [1, 2, 3] }
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/'          // 👈 cualquier ruta inválida vuelve al login
   }
@@ -66,6 +73,19 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !token) {
     return next({ name: 'Login' }) // redirige al login si no hay token
+  }
+
+  if (to.meta.allowedRoles) {
+    if (!user) {
+      return next({ name: 'Login' })
+    }
+    const u = JSON.parse(user)
+    const role = Number(
+      u.role ?? u.rol ?? u.roleId ?? u.rolId ?? u.Role ?? u.Rol ?? u.RoleID ?? u.RolID ?? 0
+    )
+    if (!to.meta.allowedRoles.includes(role)) {
+      return next({ name: 'Dashboard' })
+    }
   }
   next()
 })

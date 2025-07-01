@@ -23,6 +23,14 @@
       >
         Mi Perfil
       </v-btn>
+      <v-btn
+        v-if="[1, 2, 3].includes(userRole)"
+        color="warning"
+        class="modern-btn full-btn mx-2"
+        @click="$router.push('/team-management')"
+      >
+        Gestión de Equipo
+      </v-btn>
     </v-row>
     <hr />
     <!-- Buscador -->
@@ -256,6 +264,14 @@ export default {
     };
   },
   computed: {
+    userRole() {
+      const sessionUser = sessionStorage.getItem('user')
+      if (!sessionUser) return null
+      const u = JSON.parse(sessionUser)
+      return Number(
+        u.role ?? u.rol ?? u.roleId ?? u.rolId ?? u.Role ?? u.Rol ?? u.RoleID ?? u.RolID ?? 0
+      )
+    },
     filteredReports() {
       if (!this.searchQuery) {
         return this.visibleReports;
