@@ -8,6 +8,38 @@
     </v-row>
     <hr />
 
+    <v-row class="mb-6">
+      <v-col cols="12" md="6" offset-md="3">
+        <v-card>
+          <v-card-title>Gestión del Equipo</v-card-title>
+          <v-card-text>
+            <v-form @submit.prevent="saveTeam">
+              <v-text-field v-model="team.nombre" label="Nombre del Equipo" required />
+              <v-btn type="submit" color="primary" class="modern-btn mt-2" :loading="savingTeam">
+                {{ hasTeam ? 'Guardar Cambios' : 'Crear Equipo' }}
+              </v-btn>
+              <v-btn v-if="hasTeam" color="error" class="modern-btn mt-2" @click="deleteTeamDialog = true">
+                Eliminar Equipo
+              </v-btn>
+            </v-form>
+            <v-alert v-if="teamError" type="error" class="mt-2">{{ teamError }}</v-alert>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-dialog v-model="deleteTeamDialog" max-width="400">
+      <v-card>
+        <v-card-title class="text-h6">Confirmar Eliminación</v-card-title>
+        <v-card-text>¿Deseas eliminar este equipo?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="deleteTeamDialog = false">Cancelar</v-btn>
+          <v-btn text color="error" @click="deleteTeam">Eliminar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-row>
       <v-col cols="12">
         <v-btn color="primary" class="modern-btn mb-4" @click="$router.push('/team-management/create-player')">Nuevo Jugador</v-btn>
@@ -69,6 +101,12 @@
 <script>
 import { getAllPlayers } from '@/services/playerService'
 import { getReportsByPlayer } from '@/services/reportService'
+import {
+  getAllTeams,
+  createTeam,
+  updateTeam,
+  deleteTeam,
+} from '@/services/teamService'
 import TeamStats from '@/components/TeamStats.vue'
 
 export default {
@@ -79,7 +117,12 @@ export default {
       playerStats: [],
       selectedPlayers: [],
       detailDialog: false,
-      selectedPlayerId: null
+      selectedPlayerId: null,
+      team: { id: null, nombre: '' },
+      savingTeam: false,
+      teamError: null,
+      deleteTeamDialog: false,
+      teams: []
     }
   },
   computed: {
@@ -88,9 +131,13 @@ export default {
         return this.playerStats
       }
       return this.playerStats.filter(s => this.selectedPlayers.includes(s.player.id))
+    },
+    hasTeam() {
+      return !!this.team.nombre
     }
   },
   created() {
+    this.fetchCurrentTeam()
     this.fetchPlayers()
   },
   methods: {
@@ -99,6 +146,22 @@ export default {
       if (!sessionUser) return ''
       const user = JSON.parse(sessionUser)
       return user.equipo || user.team || ''
+    },
+    async fetchCurrentTeam() {
+      try {
+        const { data } = await getAllTeams()
+        this.teams = Array.isArray(data) ? data : data?.teams || []
+        const name = this.getUserTeam()
+        const found = this.teams.find(t => (t.nombre || t.name) === name)
+        if (found) {
+          this.team.id = found.id || found.teamId || found.Id || found.ID
+          this.team.nombre = found.nombre || found.name
+        } else {
+          this.team.nombre = name
+        }
+      } catch (err) {
+        console.error('Error fetching team', err)
+      }
     },
     async fetchPlayers() {
       try {
@@ -135,6 +198,47 @@ export default {
         }
       }
       this.playerStats = stats
+    },
+    async saveTeam() {
+      this.savingTeam = true
+      this.teamError = null
+      try {
+        if (this.hasTeam && this.team.id) {
+          await updateTeam(this.team)
+        } else {
+          const { data } = await createTeam({ nombre: this.team.nombre })
+          this.team.id = data?.id || data?.teamId || this.team.id
+        }
+        const u = JSON.parse(sessionStorage.getItem('user') || '{}')
+        u.equipo = this.team.nombre
+        sessionStorage.setItem('user', JSON.stringify(u))
+        await this.fetchPlayers()
+      } catch (err) {
+        console.error('Error saving team', err)
+        this.teamError = 'Error guardando equipo'
+      } finally {
+        this.savingTeam = false
+      }
+    },
+    async deleteTeam() {
+      if (!this.team.id) {
+        this.deleteTeamDialog = false
+        return
+      }
+      try {
+        await deleteTeam(this.team.id)
+        const u = JSON.parse(sessionStorage.getItem('user') || '{}')
+        u.equipo = ''
+        sessionStorage.setItem('user', JSON.stringify(u))
+        this.team = { id: null, nombre: '' }
+        this.players = []
+        this.playerStats = []
+      } catch (err) {
+        console.error('Error deleting team', err)
+        this.teamError = 'Error eliminando equipo'
+      } finally {
+        this.deleteTeamDialog = false
+      }
     },
     openDetail(id) {
       this.selectedPlayerId = id

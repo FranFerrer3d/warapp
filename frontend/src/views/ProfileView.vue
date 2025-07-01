@@ -54,8 +54,11 @@
             @change="handlePhotoChange"
             prepend-icon="mdi-camera"
           />
-          <v-text-field
+          <v-select
             v-model="player.equipo"
+            :items="teams"
+            item-title="nombre"
+            item-value="nombre"
             label="Equipo"
             outlined
           />
@@ -111,6 +114,7 @@
 <script>
 import { getPlayerById, updatePlayer } from '@/services/playerService';
 import { getReportsByPlayer, deleteReport } from '@/services/reportService';
+import { getAllTeams } from '@/services/teamService';
 
 export default {
   data() {
@@ -129,6 +133,7 @@ export default {
         email: v => /.+@.+\..+/.test(v) || 'Correo inválido'
       },
       reports: [],
+      teams: [],
       saving: false,
       deleteDialog: false,
       reportToDelete: null,
@@ -143,6 +148,7 @@ export default {
     }
     this.fetchPlayer();
     this.fetchReports();
+    this.fetchTeams();
   },
   methods: {
     playerId() {
@@ -179,6 +185,14 @@ export default {
         this.reports = rawReports.filter(r => r.playerAId === id);
       } catch (err) {
         console.error('Error fetching reports', err);
+      }
+    },
+    async fetchTeams() {
+      try {
+        const { data } = await getAllTeams();
+        this.teams = Array.isArray(data) ? data : data?.teams || [];
+      } catch (err) {
+        console.error('Error fetching teams', err);
       }
     },
     async saveProfile() {
