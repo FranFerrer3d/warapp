@@ -57,7 +57,7 @@ const router = createRouter({
 
 // 👇 Protección de rutas privadas
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
+  const token = sessionStorage.getItem('token')
   const user = sessionStorage.getItem('user')
 
   if (to.name === 'Login' && token && user) {

@@ -20,12 +20,12 @@
 export default {
   computed: {
     isAuthenticated() {
-      return !!localStorage.getItem("token");
+      return !!sessionStorage.getItem("token");
     },
   },
   methods: {
     logout() {
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
       sessionStorage.removeItem("user");
       this.$router.push("/"); // 👈 A la raíz
     },
