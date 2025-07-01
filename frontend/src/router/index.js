@@ -7,7 +7,8 @@ import CreateReportView from '@/views/CreateReportView.vue'
 import EditReportView from '@/views/EditReportView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
-import TeamManagementView from '@/views/TeamManagementView.vue'
+import TeamOverviewView from '@/views/TeamOverviewView.vue'
+import CreatePlayerView from '@/views/CreatePlayerView.vue'
 
 const routes = [
   {
@@ -46,10 +47,20 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/team-management',
-    name: 'TeamManagement',
-    component: TeamManagementView,
+    path: '/team-management/overview',
+    name: 'TeamOverview',
+    component: TeamOverviewView,
     meta: { requiresAuth: true, allowedRoles: [1, 2, 3] }
+  },
+  {
+    path: '/team-management/create-player',
+    name: 'CreatePlayer',
+    component: CreatePlayerView,
+    meta: { requiresAuth: true, allowedRoles: [1, 2, 3] }
+  },
+  {
+    path: '/team-management',
+    redirect: '/team-management/overview'
   },
   {
     path: '/:pathMatch(.*)*',

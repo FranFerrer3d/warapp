@@ -27,7 +27,7 @@
         v-if="[1, 2, 3].includes(userRole)"
         color="warning"
         class="modern-btn full-btn mx-2"
-        @click="$router.push('/team-management')"
+        @click="$router.push('/team-management/overview')"
       >
         Gestión de Equipo
       </v-btn>
