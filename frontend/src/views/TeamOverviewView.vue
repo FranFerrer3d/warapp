@@ -9,28 +9,11 @@
     <hr />
 
     <v-row>
-      <!-- Create Player Form -->
-      <v-col cols="12" md="4">
-        <v-card>
-          <v-card-title>Crear Nuevo Jugador</v-card-title>
-          <v-card-text>
-            <v-form @submit.prevent="createPlayerSubmit">
-              <v-text-field v-model="newPlayer.nombre" label="Nombre" required />
-              <v-text-field v-model="newPlayer.apellidos" label="Apellidos" required />
-              <v-text-field v-model="newPlayer.alias" label="Alias" required />
-              <v-text-field v-model="newPlayer.email" label="Correo" required />
-              <v-text-field v-model="newPlayer.contraseña" label="Contraseña" type="password" required />
-              <v-btn type="submit" color="primary" class="modern-btn full-btn mt-2" :loading="creating" :disabled="creating">
-                Crear
-              </v-btn>
-              <v-alert v-if="createError" type="error" class="mt-2">{{ createError }}</v-alert>
-            </v-form>
-          </v-card-text>
-        </v-card>
+      <v-col cols="12">
+        <v-btn color="primary" class="modern-btn mb-4" @click="$router.push('/team-management/create-player')">Nuevo Jugador</v-btn>
       </v-col>
-
       <!-- Team Statistics -->
-      <v-col cols="12" md="8">
+      <v-col cols="12">
         <v-card>
           <v-card-title>Estadísticas del Equipo</v-card-title>
           <v-card-text>
@@ -48,9 +31,9 @@
                 <tr>
                   <th>Jugador</th>
                   <th>Partidas</th>
-                  <th>Victorias</th>
-                  <th>Derrotas</th>
-                  <th>Empates</th>
+                  <th>Ganadas</th>
+                  <th>Empatadas</th>
+                  <th>Perdidas</th>
                 </tr>
               </thead>
               <tbody>
@@ -58,8 +41,13 @@
                   <td>{{ stat.player.alias }}</td>
                   <td>{{ stat.games }}</td>
                   <td>{{ stat.wins }}</td>
-                  <td>{{ stat.losses }}</td>
                   <td>{{ stat.draws }}</td>
+                  <td>{{ stat.losses }}</td>
+                  <td>
+                    <v-btn size="small" color="secondary" @click="openDetail(stat.player.id)">
+                      Más información
+                    </v-btn>
+                  </td>
                 </tr>
               </tbody>
             </v-table>
@@ -67,28 +55,31 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-dialog v-model="detailDialog" max-width="900px">
+      <v-card>
+        <v-card-title>Detalles Jugador</v-card-title>
+        <v-card-text>
+          <TeamStats :player-id="selectedPlayerId" v-if="detailDialog" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import { getAllPlayers, createPlayer } from '@/services/playerService'
+import { getAllPlayers } from '@/services/playerService'
 import { getReportsByPlayer } from '@/services/reportService'
+import TeamStats from '@/components/TeamStats.vue'
 
 export default {
+  components: { TeamStats },
   data() {
     return {
       players: [],
       playerStats: [],
       selectedPlayers: [],
-      newPlayer: {
-        nombre: '',
-        apellidos: '',
-        alias: '',
-        email: '',
-        contraseña: ''
-      },
-      creating: false,
-      createError: null
+      detailDialog: false,
+      selectedPlayerId: null
     }
   },
   computed: {
@@ -145,21 +136,9 @@ export default {
       }
       this.playerStats = stats
     },
-    async createPlayerSubmit() {
-      this.createError = null
-      this.creating = true
-      try {
-        const team = this.getUserTeam()
-        const payload = { ...this.newPlayer, equipo: team, team }
-        await createPlayer(payload)
-        this.newPlayer = { nombre: '', apellidos: '', alias: '', email: '', contraseña: '' }
-        await this.fetchPlayers()
-      } catch (err) {
-        console.error('Error creating player', err)
-        this.createError = 'Error creando jugador'
-      } finally {
-        this.creating = false
-      }
+    openDetail(id) {
+      this.selectedPlayerId = id
+      this.detailDialog = true
     }
   }
 }
