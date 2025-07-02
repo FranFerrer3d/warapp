@@ -294,6 +294,29 @@ export default {
       const [player, opponent] = report.finalScore.split("-").map(Number);
       return player === opponent;
     },
+    computeOpponents(reports) {
+      const result = {};
+      reports.forEach((r) => {
+        if (!result[r.opponent]) {
+          result[r.opponent] = { games: 0, wins: 0 };
+        }
+        result[r.opponent].games += 1;
+        if (this.isWin(r)) result[r.opponent].wins += 1;
+      });
+      const entries = Object.entries(result);
+      if (!entries.length) {
+        this.bestOpponent = '';
+        this.worstOpponent = '';
+        return;
+      }
+      const sorted = entries.sort((a, b) => {
+        const winRateA = a[1].games ? a[1].wins / a[1].games : 0;
+        const winRateB = b[1].games ? b[1].wins / b[1].games : 0;
+        return winRateB - winRateA;
+      });
+      this.bestOpponent = sorted[0][0];
+      this.worstOpponent = sorted[sorted.length - 1][0];
+    },
     setupCharts() {
       const ctx1 = document.getElementById("resultsChart");
       new Chart(ctx1, {
@@ -365,6 +388,9 @@ export default {
         });
         this.reports = this.allReports;
         this.armies = [...new Set(this.allReports.map((r) => r.army).filter(Boolean))];
+
+        this.computeOpponents(this.reports);
+
         this.$nextTick(() => this.setupCharts());
       } catch (err) {
         console.error('Error fetching reports', err);
@@ -392,6 +418,9 @@ export default {
       } else {
         this.reports = this.allReports.filter((r) => r.army === this.selectedArmy);
       }
+
+      this.computeOpponents(this.reports);
+
       this.$nextTick(() => this.setupCharts());
     },
   },
