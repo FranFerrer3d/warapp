@@ -388,7 +388,9 @@ export default {
         });
         this.reports = this.allReports;
         this.armies = [...new Set(this.allReports.map((r) => r.army).filter(Boolean))];
+
         this.computeOpponents(this.reports);
+
         this.$nextTick(() => this.setupCharts());
       } catch (err) {
         console.error('Error fetching reports', err);
@@ -416,7 +418,9 @@ export default {
       } else {
         this.reports = this.allReports.filter((r) => r.army === this.selectedArmy);
       }
+
       this.computeOpponents(this.reports);
+
       this.$nextTick(() => this.setupCharts());
     },
   },
