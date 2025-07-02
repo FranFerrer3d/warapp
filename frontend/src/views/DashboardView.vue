@@ -1,5 +1,7 @@
 <template>
-  <v-container fluid>
+  <div class="dashboard-view">
+    <BackgroundShapes />
+    <v-container fluid>
     <!-- Botón Nuevo Reporte -->
     <v-row class="my-4" justify="center">
       <v-btn
@@ -243,12 +245,15 @@
       </v-card>
     </v-dialog>
   </v-container>
+  </div>
 </template>
 
 <script>
 import { getReportsByPlayer } from "@/services/reportService";
+import BackgroundShapes from "@/components/BackgroundShapes.vue";
 
 export default {
+  components: { BackgroundShapes },
   data() {
     return {
       reports: [],
@@ -498,5 +503,10 @@ export default {
     width: 100%;
     margin: 5px auto;
   }
+}
+
+.dashboard-view {
+  position: relative;
+  overflow: hidden;
 }
 </style>
