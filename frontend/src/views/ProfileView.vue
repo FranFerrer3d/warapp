@@ -6,6 +6,11 @@
         Volver al Dashboard
       </ModernButton>
     </v-row>
+    <v-row class="my-4" justify="center">
+      <ModernButton color="error" class="full-btn" @click="logout">
+        Cerrar Sesión
+      </ModernButton>
+    </v-row>
     <hr />
 
     <!-- Profile Edit Card -->
@@ -237,6 +242,10 @@ export default {
         this.deleteDialog = false;
         this.reportToDelete = null;
       }
+    },
+    logout() {
+      sessionStorage.clear();
+      this.$router.push('/');
     },
     formatDate(date) {
       const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
