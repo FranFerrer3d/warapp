@@ -1,5 +1,7 @@
 <template>
-  <v-container>
+  <div class="report-view">
+    <BackgroundShapes />
+    <v-container>
     <!-- Botón Volver -->
     <v-row class="my-4" justify="center">
       <v-btn
@@ -398,6 +400,7 @@
     </v-dialog>
     <ChatbotModal v-model="chatDialog" />
   </v-container>
+  </div>
 </template>
 
 <script>
@@ -416,9 +419,10 @@ import {
 } from "@/services/reportService";
 import { getAllPlayers } from "@/services/playerService";
 import ChatbotModal from "@/components/ChatbotModal.vue";
+import BackgroundShapes from "@/components/BackgroundShapes.vue";
 
 export default {
-  components: { ChatbotModal },
+  components: { ChatbotModal, BackgroundShapes },
   data() {
     return {
       step: 1,
@@ -928,6 +932,11 @@ export default {
   bottom: 0;
   background-color: var(--v-theme-surface, #121212);
   z-index: 1;
+}
+
+.report-view {
+  position: relative;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
