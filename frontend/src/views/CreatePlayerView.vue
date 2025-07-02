@@ -2,9 +2,9 @@
   <v-container>
     <!-- Return button -->
     <v-row class="my-4" justify="center">
-      <v-btn color="primary" class="modern-btn full-btn" @click="$router.push('/dashboard')">
+      <ModernButton color="primary" class="full-btn" @click="$router.push('/dashboard')">
         Volver al Dashboard
-      </v-btn>
+      </ModernButton>
     </v-row>
     <hr />
 
@@ -20,9 +20,9 @@
               <v-text-field v-model="newPlayer.alias" label="Alias" required />
               <v-text-field v-model="newPlayer.email" label="Correo" required />
               <v-text-field v-model="newPlayer.contraseña" label="Contraseña" type="password" required />
-              <v-btn type="submit" color="primary" class="modern-btn full-btn mt-2" :loading="creating" :disabled="creating">
+              <ModernButton type="submit" color="primary" class="full-btn mt-2" :loading="creating" :disabled="creating">
                 Crear
-              </v-btn>
+              </ModernButton>
               <v-alert v-if="createError" type="error" class="mt-2">{{ createError }}</v-alert>
             </v-form>
           </v-card-text>
@@ -34,8 +34,11 @@
 
 <script>
 import { createPlayer } from '@/services/playerService'
+import { getSessionUser } from '@/utils/session.js'
+import ModernButton from '@/components/ModernButton.vue'
 
 export default {
+  components: { ModernButton },
   data() {
     return {
       newPlayer: {
@@ -51,9 +54,8 @@ export default {
   },
   methods: {
     getUserTeam() {
-      const sessionUser = sessionStorage.getItem('user')
-      if (!sessionUser) return ''
-      const user = JSON.parse(sessionUser)
+      const user = getSessionUser()
+      if (!user) return ''
       return user.equipo || user.team || ''
     },
     async createPlayerSubmit() {
@@ -75,24 +77,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.modern-btn {
-  background: linear-gradient(135deg, #00f0ff, #7f00ff);
-  color: white;
-  font-weight: bold;
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.modern-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 12px #7f00ff;
-}
-
-@media (max-width: 768px) {
-  .modern-btn {
-    width: 100%;
-    margin: 5px auto;
-  }
-}
-</style>
 

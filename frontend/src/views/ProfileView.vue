@@ -2,9 +2,9 @@
   <v-container>
     <!-- Button to return to dashboard -->
     <v-row class="my-4" justify="center">
-      <v-btn color="primary" class="modern-btn full-btn" @click="$router.push('/dashboard')">
+      <ModernButton color="primary" class="full-btn" @click="$router.push('/dashboard')">
         Volver al Dashboard
-      </v-btn>
+      </ModernButton>
     </v-row>
     <hr />
 
@@ -62,15 +62,15 @@
             label="Equipo"
             outlined
           />
-          <v-btn
+          <ModernButton
             type="submit"
             :loading="saving"
             :disabled="saving"
-            class="modern-btn full-btn mt-4"
+            class="full-btn mt-4"
             color="secondary"
           >
             Guardar Cambios
-          </v-btn>
+          </ModernButton>
           <v-alert v-if="saveError" type="error" class="mt-4">
             {{ saveError }}
           </v-alert>
@@ -115,8 +115,11 @@
 import { getPlayerById, updatePlayer } from '@/services/playerService';
 import { getReportsByPlayer, deleteReport } from '@/services/reportService';
 import { getAllTeams } from '@/services/teamService';
+import ModernButton from '@/components/ModernButton.vue';
+import { getPlayerId } from '@/utils/session.js';
 
 export default {
+  components: { ModernButton },
   data() {
     return {
       player: {
@@ -141,7 +144,7 @@ export default {
     };
   },
   created() {
-    const id = this.playerId();
+    const id = getPlayerId();
     if (!id) {
       this.$router.push('/');
       return;
@@ -151,14 +154,8 @@ export default {
     this.fetchTeams();
   },
   methods: {
-    playerId() {
-      const sessionUser = sessionStorage.getItem('user');
-      if (!sessionUser) return null;
-      const user = JSON.parse(sessionUser);
-      return user.id ?? user.playerId ?? user.Id ?? user.ID;
-    },
     async fetchPlayer() {
-      const id = this.playerId();
+      const id = getPlayerId();
       if (!id) return;
       try {
         const { data } = await getPlayerById(id);
@@ -177,7 +174,7 @@ export default {
       }
     },
     async fetchReports() {
-      const id = this.playerId();
+      const id = getPlayerId();
       if (!id) return;
       try {
         const { data } = await getReportsByPlayer(id);
@@ -202,7 +199,7 @@ export default {
       this.saveError = null;
       try {
         const payload = { ...this.player };
-        payload.id = payload.id || this.playerId();
+        payload.id = payload.id || getPlayerId();
         if (payload.foto && payload.foto.startsWith('data:')) {
           payload.foto = payload.foto.split(',')[1];
         }
@@ -249,24 +246,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.modern-btn {
-  background: linear-gradient(135deg, #00f0ff, #7f00ff);
-  color: white;
-  font-weight: bold;
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.modern-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 12px #7f00ff;
-}
-
-@media (max-width: 768px) {
-  .modern-btn {
-    width: 100%;
-    margin: 5px auto;
-  }
-}
-</style>
 
