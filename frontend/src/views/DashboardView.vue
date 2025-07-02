@@ -4,35 +4,35 @@
     <v-container fluid>
     <!-- Botón Nuevo Reporte -->
     <v-row class="my-4" justify="center">
-      <v-btn
+      <ModernButton
         color="primary"
-        class="modern-btn full-btn mx-2"
+        class="full-btn mx-2"
         @click="$router.push('/create-report')"
       >
         Nuevo Reporte
-      </v-btn>
-      <v-btn
+      </ModernButton>
+      <ModernButton
         color="secondary"
-        class="modern-btn full-btn mx-2"
+        class="full-btn mx-2"
         @click="$router.push('/statistics')"
       >
         Ver Estadísticas
-      </v-btn>
-      <v-btn
+      </ModernButton>
+      <ModernButton
         color="accent"
-        class="modern-btn full-btn mx-2"
+        class="full-btn mx-2"
         @click="$router.push('/profile')"
       >
         Mi Perfil
-      </v-btn>
-      <v-btn
+      </ModernButton>
+      <ModernButton
         v-if="[1, 2, 3].includes(userRole)"
         color="warning"
-        class="modern-btn full-btn mx-2"
+        class="full-btn mx-2"
         @click="$router.push('/team-management/overview')"
       >
         Gestión de Equipo
-      </v-btn>
+      </ModernButton>
     </v-row>
     <hr />
     <!-- Buscador -->
@@ -251,9 +251,10 @@
 <script>
 import { getReportsByPlayer } from "@/services/reportService";
 import BackgroundShapes from "@/components/BackgroundShapes.vue";
+import ModernButton from "@/components/ModernButton.vue";
 
 export default {
-  components: { BackgroundShapes },
+  components: { BackgroundShapes, ModernButton },
   data() {
     return {
       reports: [],
@@ -486,24 +487,6 @@ export default {
   overflow-y: auto;
 }
 
-.modern-btn {
-  background: linear-gradient(135deg, #00f0ff, #7f00ff);
-  color: white;
-  font-weight: bold;
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.modern-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 12px #7f00ff;
-}
-
-@media (max-width: 768px) {
-  .modern-btn {
-    width: 100%;
-    margin: 5px auto;
-  }
-}
 
 .dashboard-view {
   position: relative;

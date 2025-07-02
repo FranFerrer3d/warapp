@@ -2,9 +2,9 @@
   <v-container>
     <!-- Return button -->
     <v-row class="my-4" justify="center">
-      <v-btn color="primary" class="modern-btn full-btn" @click="$router.push('/dashboard')">
+      <ModernButton color="primary" class="full-btn" @click="$router.push('/dashboard')">
         Volver al Dashboard
-      </v-btn>
+      </ModernButton>
     </v-row>
     <hr />
 
@@ -15,12 +15,12 @@
           <v-card-text>
             <v-form @submit.prevent="saveTeam">
               <v-text-field v-model="team.nombre" label="Nombre del Equipo" required />
-              <v-btn type="submit" color="primary" class="modern-btn mt-2" :loading="savingTeam">
+              <ModernButton type="submit" color="primary" class="mt-2" :loading="savingTeam">
                 {{ hasTeam ? 'Guardar Cambios' : 'Crear Equipo' }}
-              </v-btn>
-              <v-btn v-if="hasTeam" color="error" class="modern-btn mt-2" @click="deleteTeamDialog = true">
+              </ModernButton>
+              <ModernButton v-if="hasTeam" color="error" class="mt-2" @click="deleteTeamDialog = true">
                 Eliminar Equipo
-              </v-btn>
+              </ModernButton>
             </v-form>
             <v-alert v-if="teamError" type="error" class="mt-2">{{ teamError }}</v-alert>
           </v-card-text>
@@ -42,7 +42,7 @@
 
     <v-row>
       <v-col cols="12">
-        <v-btn color="primary" class="modern-btn mb-4" @click="$router.push('/team-management/create-player')">Nuevo Jugador</v-btn>
+        <ModernButton color="primary" class="mb-4" @click="$router.push('/team-management/create-player')">Nuevo Jugador</ModernButton>
       </v-col>
       <!-- Team Statistics -->
       <v-col cols="12">
@@ -108,9 +108,11 @@ import {
   deleteTeam,
 } from '@/services/teamService'
 import TeamStats from '@/components/TeamStats.vue'
+import ModernButton from '@/components/ModernButton.vue'
+import { getSessionUser } from '@/utils/session.js'
 
 export default {
-  components: { TeamStats },
+  components: { TeamStats, ModernButton },
   data() {
     return {
       players: [],
@@ -142,9 +144,8 @@ export default {
   },
   methods: {
     getUserTeam() {
-      const sessionUser = sessionStorage.getItem('user')
-      if (!sessionUser) return ''
-      const user = JSON.parse(sessionUser)
+      const user = getSessionUser()
+      if (!user) return ''
       return user.equipo || user.team || ''
     },
     async fetchCurrentTeam() {
@@ -209,7 +210,7 @@ export default {
           const { data } = await createTeam({ nombre: this.team.nombre })
           this.team.id = data?.id || data?.teamId || this.team.id
         }
-        const u = JSON.parse(sessionStorage.getItem('user') || '{}')
+        const u = getSessionUser() || {}
         u.equipo = this.team.nombre
         sessionStorage.setItem('user', JSON.stringify(u))
         await this.fetchPlayers()
@@ -227,7 +228,7 @@ export default {
       }
       try {
         await deleteTeam(this.team.id)
-        const u = JSON.parse(sessionStorage.getItem('user') || '{}')
+        const u = getSessionUser() || {}
         u.equipo = ''
         sessionStorage.setItem('user', JSON.stringify(u))
         this.team = { id: null, nombre: '' }
@@ -248,24 +249,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.modern-btn {
-  background: linear-gradient(135deg, #00f0ff, #7f00ff);
-  color: white;
-  font-weight: bold;
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.modern-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 12px #7f00ff;
-}
-
-@media (max-width: 768px) {
-  .modern-btn {
-    width: 100%;
-    margin: 5px auto;
-  }
-}
-</style>
 

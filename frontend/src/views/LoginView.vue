@@ -18,15 +18,15 @@
                 type="password"
                 required
               />
-              <v-btn
+              <ModernButton
                 :loading="loading"
                 :disabled="loading"
                 type="submit"
                 block
-                class="modern-btn full-btn"
+                class="full-btn"
               >
                 Entrar
-              </v-btn>
+              </ModernButton>
             </v-form>
 
             <v-alert v-if="error" type="error" class="mt-4">
@@ -45,8 +45,10 @@
 
 <script>
 import { login } from "@/services/authService";
+import ModernButton from "@/components/ModernButton.vue";
 
 export default {
+  components: { ModernButton },
   data() {
     return {
       email: "",
@@ -151,15 +153,4 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.modern-btn {
-  background: linear-gradient(135deg, #00f0ff, #7f00ff);
-  color: white;
-  font-weight: bold;
-  border-radius: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.modern-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 12px #7f00ff;
-}
 </style>
