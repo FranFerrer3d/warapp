@@ -60,6 +60,18 @@
       </v-col>
     </v-row>
 
+    <!-- Filtro por Ejército -->
+    <v-row class="mb-4" justify="center">
+      <v-col cols="12" md="6">
+        <v-select
+          v-model="selectedArmy"
+          :items="armies"
+          label="Filtrar por Ejército"
+          clearable
+        ></v-select>
+      </v-col>
+    </v-row>
+
     <!-- Gráficos -->
     <v-row class="mb-6">
       <v-col cols="12" md="6">
@@ -177,6 +189,9 @@ export default {
   data() {
     return {
       reports: [],
+      allReports: [],
+      armies: [],
+      selectedArmy: '',
       bestOpponent: '',
       worstOpponent: '',
     };
@@ -318,10 +333,11 @@ export default {
         const { data } = await getReportsByPlayer(playerId);
         const rawReports = Array.isArray(data) ? data : data?.reports || [];
 
-        this.reports = rawReports.map((r) => {
+        this.allReports = rawReports.map((r) => {
           const isPlayerA = r.playerAId === playerId;
           const player = isPlayerA ? r.playerA : r.playerB;
           const opponent = isPlayerA ? r.playerB : r.playerA;
+          const army = isPlayerA ? r.armyA : r.armyB;
 
           let primaryResult = 'none';
           if (r.primaryResult === 1) {
@@ -338,6 +354,7 @@ export default {
             deployment: r.deployment,
             primaryMission: r.primaryMission,
             date: r.date,
+            army,
             secondaryPlayer: isPlayerA ? r.secondaryA : r.secondaryB,
             secondaryOpponent: isPlayerA ? r.secondaryB : r.secondaryA,
             pointsPlayer: isPlayerA ? r.killsA : r.killsB,
@@ -346,8 +363,9 @@ export default {
             primaryResult,
           };
         });
-
-        this.setupCharts();
+        this.reports = this.allReports;
+        this.armies = [...new Set(this.allReports.map((r) => r.army).filter(Boolean))];
+        this.$nextTick(() => this.setupCharts());
       } catch (err) {
         console.error('Error fetching reports', err);
       }
@@ -365,6 +383,16 @@ export default {
       } catch (err) {
         console.error('Error fetching stats', err);
       }
+    },
+  },
+  watch: {
+    selectedArmy() {
+      if (!this.selectedArmy) {
+        this.reports = this.allReports;
+      } else {
+        this.reports = this.allReports.filter((r) => r.army === this.selectedArmy);
+      }
+      this.$nextTick(() => this.setupCharts());
     },
   },
   mounted() {
