@@ -320,7 +320,17 @@
             :src="currentImage"
             class="mb-2 map-rotated"
           />
-          {{ currentInfo }}
+          <div
+            v-for="section in currentSections"
+            :key="section.title"
+            class="mb-4"
+          >
+            <h3 class="text-subtitle-1">{{ section.title }}</h3>
+            <ul v-if="section.items.length > 1">
+              <li v-for="(item, idx) in section.items" :key="idx">{{ item }}</li>
+            </ul>
+            <p v-else>{{ section.items[0] }}</p>
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -450,6 +460,7 @@ export default {
       infoDialog: false,
       currentInfo: "",
       currentImage: "",
+      currentSections: [],
       magicOptions: [
         { value: 1, label: "1 - 4 Magic Dice" },
         { value: 2, label: "2 - 5 Magic Dice" },
@@ -790,7 +801,36 @@ export default {
     openInfoDialog(info, image) {
       this.currentInfo = info;
       this.currentImage = image || "";
+      this.currentSections = this.parseInfo(info);
       this.infoDialog = true;
+    },
+    parseInfo(text) {
+      if (!text) return [];
+      const lines = text.split(/\r?\n/);
+      const sections = [];
+      let current = null;
+      lines.forEach((l) => {
+        const line = l.trim();
+        if (!line) return;
+        const match = line.match(/^([\wÁÉÍÓÚáéíóúÑñ ]+):\s*(.*)$/);
+        if (match) {
+          if (current) sections.push(current);
+          current = { title: match[1], items: [] };
+          if (match[2]) current.items.push(match[2]);
+        } else if (line.startsWith("-")) {
+          if (!current) {
+            current = { title: "", items: [] };
+          }
+          current.items.push(line.substring(1).trim());
+        } else {
+          if (!current) {
+            current = { title: "", items: [] };
+          }
+          current.items.push(line);
+        }
+      });
+      if (current) sections.push(current);
+      return sections;
     },
     magicOptionsForPlayerA(index) {
       return this.magicOptions.filter(
