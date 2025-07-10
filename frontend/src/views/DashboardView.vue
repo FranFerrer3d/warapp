@@ -33,6 +33,14 @@
       >
         Gestión de Equipo
       </ModernButton>
+      <ModernButton
+        v-if="userRole === 3"
+        color="error"
+        class="full-btn mx-2"
+        @click="$router.push('/admin')"
+      >
+        Panel Administración
+      </ModernButton>
     </v-row>
     <hr />
     <!-- Buscador -->

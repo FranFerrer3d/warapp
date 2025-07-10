@@ -9,6 +9,7 @@ import StatisticsView from '@/views/StatisticsView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import TeamOverviewView from '@/views/TeamOverviewView.vue'
 import CreatePlayerView from '@/views/CreatePlayerView.vue'
+import AdminPanelView from '@/views/AdminPanelView.vue'
 
 const routes = [
   {
@@ -45,6 +46,12 @@ const routes = [
     name: 'Profile',
     component: ProfileView,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin',
+    name: 'AdminPanel',
+    component: AdminPanelView,
+    meta: { requiresAuth: true, allowedRoles: [3] }
   },
   {
     path: '/team-management/overview',
