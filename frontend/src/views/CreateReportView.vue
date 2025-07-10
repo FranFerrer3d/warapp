@@ -175,15 +175,27 @@
                 />
               </v-col>
             </v-row>
-            <v-btn
-              class="modern-btn mt-2"
-              color="secondary"
-              outlined
-              @click="randomNextPlayerMagic"
-            >
-              <v-icon start>mdi-dice-multiple</v-icon>
-              Siguiente Aleatorio
-            </v-btn>
+            <div class="d-flex align-center mt-2">
+              <v-btn
+                class="modern-btn mr-4"
+                color="secondary"
+                outlined
+                @click="randomNextPlayerMagic"
+              >
+                <v-icon start>mdi-dice-multiple</v-icon>
+                Siguiente Aleatorio
+              </v-btn>
+              <v-checkbox
+                class="ml-2"
+                :model-value="playerMagicDieSaved"
+                :label="
+                  playerMagicDieSaved
+                    ? 'Dado de magia guardado'
+                    : 'Guardar dado de magia'
+                "
+                @click="promptMagicDieToggle('player')"
+              />
+            </div>
 
             <h3 class="mt-6">Turnos de Magia - Oponente</h3>
             <v-row dense>
@@ -202,15 +214,27 @@
                 />
               </v-col>
             </v-row>
-            <v-btn
-              class="modern-btn mt-2"
-              color="secondary"
-              outlined
-              @click="randomNextOpponentMagic"
-            >
-              <v-icon start>mdi-dice-multiple</v-icon>
-              Siguiente Aleatorio
-            </v-btn>
+            <div class="d-flex align-center mt-2">
+              <v-btn
+                class="modern-btn mr-4"
+                color="secondary"
+                outlined
+                @click="randomNextOpponentMagic"
+              >
+                <v-icon start>mdi-dice-multiple</v-icon>
+                Siguiente Aleatorio
+              </v-btn>
+              <v-checkbox
+                class="ml-2"
+                :model-value="opponentMagicDieSaved"
+                :label="
+                  opponentMagicDieSaved
+                    ? 'Dado de magia guardado'
+                    : 'Guardar dado de magia'
+                "
+                @click="promptMagicDieToggle('opponent')"
+              />
+            </div>
             <v-btn
               color="info"
               class="mt-4"
@@ -408,6 +432,31 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="magicDieDialog" max-width="400">
+      <v-card>
+        <v-card-title class="text-h6">
+          {{
+            pendingMagicDie
+              ? 'Guardar dado de magia'
+              : 'Gastar dado de magia'
+          }}
+        </v-card-title>
+        <v-card-text>
+          {{
+            pendingMagicDie
+              ? '¿Estas seguro de querer guardar un dado de magia?'
+              : '¿Estas seguro de querer gastar un dado de magia?'
+          }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="cancelMagicDieToggle">Cancelar</v-btn>
+          <v-btn text color="primary" @click="confirmMagicDieToggle"
+            >Aceptar</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <ChatbotModal v-model="chatDialog" />
   </v-container>
   </div>
@@ -478,6 +527,11 @@ export default {
       primaryResult: null,
       secondaryPlayerCompleted: false,
       secondaryOpponentCompleted: false,
+      playerMagicDieSaved: false,
+      opponentMagicDieSaved: false,
+      magicDieDialog: false,
+      pendingMagicDie: false,
+      pendingMagicDieOwner: null,
       saving: false,
       stepError: null,
       saveError: null,
@@ -675,9 +729,11 @@ export default {
         pointsOpponent: this.pointsOpponent,
         primaryResult: this.primaryResult,
         secondaryPlayerCompleted: this.secondaryPlayerCompleted,
-        secondaryOpponentCompleted: this.secondaryOpponentCompleted,
-        editId: this.editId,
-      };
+      secondaryOpponentCompleted: this.secondaryOpponentCompleted,
+      playerMagicDieSaved: this.playerMagicDieSaved,
+      opponentMagicDieSaved: this.opponentMagicDieSaved,
+      editId: this.editId,
+    };
       sessionStorage.setItem("reportDraft", JSON.stringify(draft));
     },
 
@@ -709,6 +765,10 @@ export default {
           d.secondaryPlayerCompleted ?? this.secondaryPlayerCompleted;
         this.secondaryOpponentCompleted =
           d.secondaryOpponentCompleted ?? this.secondaryOpponentCompleted;
+        this.playerMagicDieSaved =
+          d.playerMagicDieSaved ?? this.playerMagicDieSaved;
+        this.opponentMagicDieSaved =
+          d.opponentMagicDieSaved ?? this.opponentMagicDieSaved;
         this.editId = d.editId ?? this.editId;
       } catch (err) {
         console.error("Error loading draft", err);
@@ -861,6 +921,28 @@ export default {
       if (!opts.length) return;
       const choice = opts[Math.floor(Math.random() * opts.length)];
       this.opponentMagic[idx] = choice.value;
+    },
+    promptMagicDieToggle(owner) {
+      this.pendingMagicDieOwner = owner;
+      if (owner === 'player') {
+        this.pendingMagicDie = !this.playerMagicDieSaved;
+      } else {
+        this.pendingMagicDie = !this.opponentMagicDieSaved;
+      }
+      this.magicDieDialog = true;
+    },
+    confirmMagicDieToggle() {
+      if (this.pendingMagicDieOwner === 'player') {
+        this.playerMagicDieSaved = this.pendingMagicDie;
+      } else if (this.pendingMagicDieOwner === 'opponent') {
+        this.opponentMagicDieSaved = this.pendingMagicDie;
+      }
+      this.magicDieDialog = false;
+      this.pendingMagicDieOwner = null;
+    },
+    cancelMagicDieToggle() {
+      this.magicDieDialog = false;
+      this.pendingMagicDieOwner = null;
     },
     parseArmy(list) {
       if (!list) return null;
